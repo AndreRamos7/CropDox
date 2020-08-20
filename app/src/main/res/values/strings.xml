@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CropDox</string>
+    <string name="tela_qr_name">Escaneie o código QR</string>
+    <string name="button">Play</string>
+    <string name="img_btn_play">play.png</string>
+    <string name="str_iniciar">Iniciar</string>
+    <string name="str_about">Sobre</string>
+    <string name="str_video">Video doc Extrator (New)</string>
+    <string name="str_btn_qr">QR-code</string>
+    <string name="str_btn_cv">Cam CV</string>
+    <string name="instrucao_qr">Acesse cropdox.com no seu computador</string>
+    <string name="instrucao_de_uso"> <![CDATA[    <h3>Instruções</h3>  1 - Clique em Iniciar;<br>        2 - tire uma foto;<br>        3 - acesse cropdox.com no seu computador;<br>        4 - escaneie o código QR. ]]> </string>
+    <string name="descricao_app">Para utilizar o app, regule os controles deslizantes para remover o fundo onde se encontra o documento. Estes controladores regulam as cores nos canais HSV min e max (da esquerda para a direita). Após isso o app irá desenhar um retângulo ao redor do documento, então você clica sobre o botão para tirar a foto.</string>
+    <string name="cropdox_beta">CropDox - beta</string>
+</resources>

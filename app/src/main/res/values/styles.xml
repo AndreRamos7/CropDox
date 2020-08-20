@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#281060</item>
+        <item name="colorPrimaryDark">#423638</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+    <style name="AppCompat.TelaCheia" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#281060</item>
+        <item name="colorPrimaryDark">#423638</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+</resources>
