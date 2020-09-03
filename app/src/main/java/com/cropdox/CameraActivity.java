@@ -62,6 +62,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private FileService fileService;
 
     private static final String ENDERECO = "http://cropdox.com/receber-arquivo";
+
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
     private int counter = 0;
@@ -157,7 +158,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         }
         return false;
     }
-
+    /*
+    Envia a imagem para o servidor VPS cropdox.com utilizando Retrofit
+     */
     private void enviarImagem(){
         runOnUiThread(new Runnable() {
             @Override
@@ -240,7 +243,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
             try {
                 saveImage(analyzed);
-                //galleryAddPic();
             } catch (IOException e) {
                 e.printStackTrace();
             }

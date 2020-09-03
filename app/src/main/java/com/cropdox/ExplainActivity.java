@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.cropdox.ui.main.ExplainFragment;
-
+/*
+* um breve tutorial para o usuário para ser exibido no primeiro contato com o aplicativo
+* */
 public class ExplainActivity extends AppCompatActivity {
 
     @Override
