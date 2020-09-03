@@ -147,45 +147,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         btn_play.setOnTouchListener(this);
 
     }
-/*
-    private class SendHttpRequestTask extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... params) {
-            String url = params[0];
-            String param1 = params[1];
-            String param2 = params[2];
-            //Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.logo);
-            Bitmap b = Bitmap.createBitmap(foto.cols(), foto.rows(), Bitmap.Config.RGB_565);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            b.compress(Bitmap.CompressFormat.PNG, 0, baos);
-
-            try {
-                RemoteUploader client = new RemoteUploader(CameraActivity.ENDERECO);
-                client.connectForMultipart();
-                client.addFormPart("param1", param1);
-                client.addFormPart("param2", param2);
-                client.addFilePart("file", "logo.png", baos.toByteArray());
-                client.finishMultipart();
-                String data = client.getResponse();
-                Log.v(GENIAL_LOG, data);
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String data) {
-            //item.setActionView(null);
-
-        }
-
-    }
-*/
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_UP) {
