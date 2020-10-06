@@ -141,7 +141,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 }
             }
         };
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
         btn_play.setOnClickListener(this);
         next_btn.setOnClickListener(this);
