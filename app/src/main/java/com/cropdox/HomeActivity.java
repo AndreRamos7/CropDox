@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
-    public static final String EXTRA_MESSAGE = "com.genialsoftwares.utilities.cropdox.MESSAGE";
+    public static final String EXTRA_MESSAGE = "com.cropdox.MESSAGE";
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
 
     @Override
@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             // MY_PERMISSIONS_REQUEST_CAMERA is an
             // app-defined int constant. The callback method gets the
             // result of the request.
-
         } else {
             Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
         }

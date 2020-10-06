@@ -119,8 +119,11 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
 
     private void enviar_id_browser_ao_servidor(String browser_id_qr) throws JSONException {
         String message = "attemptSend ANDREOID";
-
-        String jsonString = "{url: \"/imagem_do_servidor\", cel_id: \"" + mSocket.id() + "\", browser_id: \"" + browser_id_qr + "\"}";
+        String jsonString = "{url: \"/imagem_do_servidor\", cel_id: \"" +
+                mSocket.id() +
+                "\", browser_id: \"" +
+                browser_id_qr +
+                "\"}";
         JSONObject listasJSON = new JSONObject(jsonString);
 
         if (TextUtils.isEmpty(message)) {

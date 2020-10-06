@@ -351,7 +351,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         foto = frame.clone();
 
         Imgproc.putText(frame, "Captured: " + frame.size(), new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
-
         Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, analyzed);
         //SHOW IMAGE
