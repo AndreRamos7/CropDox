@@ -62,7 +62,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private FileService fileService;
 
     private static final String ENDERECO = "http://cropdox.com/receber-arquivo";
-
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
     private int counter = 0;
@@ -77,6 +76,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private int touch_y;
     private final String TOUCH_GENIAL = "TOUCH GENIAL";
     private final String GENIAL_LOG = "GENIAL";
+    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,7 +273,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             e.printStackTrace();
         }
     }
-    String currentPhotoPath;
+
+
 
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

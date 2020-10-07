@@ -34,6 +34,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     private FpsMeter mFpsMeter;
     private Socket mSocket;
     private TextView text_view_descricao;
+    private String email_do_usuario_logado;
 
     {
         try {
@@ -49,6 +50,8 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
+        //nome do usuário logado
+        email_do_usuario_logado = "email";
 
         mSocket.on("mensagem", onNewMessage);
         mSocket.connect();
@@ -123,6 +126,8 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
                 mSocket.id() +
                 "\", browser_id: \"" +
                 browser_id_qr +
+                "\", email_do_usuario_logado: \"" +
+                email_do_usuario_logado +
                 "\"}";
         JSONObject listasJSON = new JSONObject(jsonString);
 
