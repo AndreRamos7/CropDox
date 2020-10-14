@@ -18,7 +18,7 @@ import java.net.URL;
 
 public class RemoteUploader {
 
-    private static final String ENDERECO = "http://cropdox.com/receber-arquivo";
+    private static final String ENDERECO = "http://127.0.0.1/receber-arquivo";
     private URL url;
     private HttpURLConnection con;
     private String delimiter = "--";

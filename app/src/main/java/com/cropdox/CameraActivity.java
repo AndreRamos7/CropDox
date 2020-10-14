@@ -61,7 +61,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         View.OnClickListener, View.OnTouchListener {
     private FileService fileService;
 
-    private static final String ENDERECO = "http://cropdox.com/receber-arquivo";
+    private static final String ENDERECO = "http://192.168.0.107/receber-arquivo";
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
     private int counter = 0;
@@ -77,12 +77,13 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private final String TOUCH_GENIAL = "TOUCH GENIAL";
     private final String GENIAL_LOG = "GENIAL";
     private String currentPhotoPath;
+    private String email_do_usuario_logado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
+        email_do_usuario_logado = "andre.rammos7@gmail.com";
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
@@ -226,8 +227,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Intent intent = new Intent(this, QrActivity.class);
         //EditText editText = (EditText) findViewById(R.id.editText);
         //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
         startActivity(intent);
+
     }
 
     @Override
@@ -290,10 +292,10 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         File meu_diretorio = new File(root + "/CropDox");
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "CropDox_" + timeStamp + "_";
-        File storageDir = meu_diretorio;
+        String imageFileName = email_do_usuario_logado;//"CropDox_" + timeStamp + "_";
+        //File storageDir = meu_diretorio;
         File image = new File(
-                storageDir,      /* directory */
+                meu_diretorio,      /* directory */
                 imageFileName +  /* prefix */
                         ".jpg"        /* suffix */
         );
