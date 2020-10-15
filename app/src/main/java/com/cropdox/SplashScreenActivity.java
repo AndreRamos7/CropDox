@@ -22,7 +22,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void mostrarLogin() {
-        Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
+        Intent intent = new Intent(SplashScreenActivity.this, LogInActivity.class);
         startActivity(intent);
         finish();
     }

@@ -9,30 +9,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
+        <activity android:name=".LogInActivity"></activity>
         <activity
             android:name=".SplashScreenActivity"
             android:theme="@style/AppCompat.TelaCheia">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".HomeActivity"
             android:theme="@style/NoActionBar" />
-
         <activity
             android:name=".CameraActivity"
             android:configChanges="keyboardHidden|orientation"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="landscape" />
-
         <activity android:name=".ExplainActivity" />
-
-
-
         <activity
             android:name=".QrActivity"
             android:label="@string/tela_qr_name"
@@ -44,22 +39,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
         </activity>
-
         <activity android:name=".TransferActivity" />
-
         <activity
             android:name=".CamActivity"
             android:configChanges="keyboardHidden|orientation"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="landscape">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
-        </activity>
-
-        <!-- =================== DEMAIS CONFIGURAÇÕES ====================== -->
-
+        </activity> <!-- =================== DEMAIS CONFIGURAÇÕES ====================== -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.cropdox.fileprovider"
@@ -78,21 +69,21 @@
         android:resizeable="true"
         android:smallScreens="true" />
     <uses-feature
-        android:name="android.hardware.camera.front"
-        android:required="false" />
-    <uses-feature
         android:name="android.hardware.camera.front.autofocus"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
