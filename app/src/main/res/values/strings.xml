@@ -13,4 +13,7 @@
     <string name="descricao_app">Para utilizar o app, regule os controles deslizantes para remover o fundo onde se encontra o documento. Estes controladores regulam as cores nos canais HSV min e max (da esquerda para a direita). Após isso o app irá desenhar um retângulo ao redor do documento, então você clica sobre o botão para tirar a foto.</string>
     <string name="cropdox_beta">CropDox - beta</string>
     <string name="transfer_result">Exibindo no seu browser!!</string>
+    <string name="not_log_in">not_log_in</string>
+    <string name="default_web_client_id">dsafvasdfd favfasdavfdsa</string>
+    <string name="not_firebase_auth">not_firebase_auth</string>
 </resources>

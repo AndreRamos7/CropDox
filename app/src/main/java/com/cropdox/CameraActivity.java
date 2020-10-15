@@ -61,10 +61,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         View.OnClickListener, View.OnTouchListener {
     private FileService fileService;
 
-    private static final String ENDERECO = "http://192.168.0.107/receber-arquivo";
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
-    private int counter = 0;
     private final String TAG = "Genial";
     private Mat foto  = null;
     private Rect rect_foto = new Rect();
