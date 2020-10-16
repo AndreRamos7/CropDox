@@ -15,4 +15,6 @@
     <string name="transfer_result">Exibindo no seu browser!!</string>
     <string name="not_log_in">not_log_in</string>
     <string name="not_firebase_auth">not_firebase_auth</string>
+    <string name="sign_out">Sair</string>
+    <string name="disconnect">Discoonectar</string>
 </resources>

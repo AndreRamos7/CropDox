@@ -17,11 +17,18 @@ import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String EXTRA_MESSAGE = "com.cropdox.MESSAGE";
-    private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
+    private final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
+    private String email_do_usuario_logado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email_do_usuario_logado = extras.getString("email");
+        }
+
         //Remove a title bar
         //this.requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
@@ -81,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /** Called when the user taps the Send button */
     public void iniciarCapturaQR(View view) {
         Intent intent = new Intent(this, QrActivity.class);
+        intent.putExtra("email", email_do_usuario_logado);
         startActivity(intent);
     }
 

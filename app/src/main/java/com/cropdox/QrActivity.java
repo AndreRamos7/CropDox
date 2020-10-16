@@ -118,8 +118,6 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
 
          try {
              if (!textoQr.equalsIgnoreCase("")) {
-
-
                  enviar_id_browser_ao_servidor(textoQr);
              }
          } catch (JSONException e) {
