@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -54,20 +53,32 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.activity_home);
         Button btn_inicial = (Button) findViewById(R.id.btn_iniciar);
-        //Button btn_about = (Button) findViewById(R.id.btn_about);
-        Button btn_qr = (Button) findViewById(R.id.btn_qr);
-        Button btn_cv = (Button) findViewById(R.id.btn_cv);
+        Button btn_qr = (Button) findViewById(R.id.btn_sair);
+        Button btn_cv = (Button) findViewById(R.id.btn_desconnect);
+        TextView textView_saudacoes = (TextView) findViewById(R.id.text_view_saudacoes);
 
         //possibilita exibir Texto em HTML em textViews
         TextView textHtml = TextView.class.cast(findViewById(R.id.text_view_descricao));
         final Spanned textoEmHtml = Html.fromHtml( getApplicationContext().getString(R.string.instrucao_de_uso));
         textHtml.setText(textoEmHtml);
+        textView_saudacoes.setText("Olá, " + email_do_usuario_logado + "! Seja Bem-vindo!");
 
         btn_inicial.setOnClickListener(this);
         btn_cv.setOnClickListener(this);
         btn_qr.setOnClickListener(this);
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btn_iniciar){
+            iniciarCaptura(v);
+        }else if(v.getId() == R.id.btn_sair) {
+            iniciarCapturaQR(v);
+        }else if(v.getId() == R.id.btn_desconnect){
+            iniciarCapturaOpenCV(v);
+            //Toast.makeText(this.getApplicationContext(), "Função em desenvolvimento.", Toast.LENGTH_LONG).show();
+        }
+    }
     /** Called when the user taps the Send button */
     public void iniciarCaptura(View view) {
         Toast.makeText(this, "User in HomeActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
@@ -90,15 +101,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.btn_iniciar){
-            iniciarCaptura(v);
-        }else if(v.getId() == R.id.btn_qr) {
-            iniciarCapturaQR(v);
-        }else if(v.getId() == R.id.btn_cv){
-            iniciarCapturaOpenCV(v);
-            //Toast.makeText(this.getApplicationContext(), "Função em desenvolvimento.", Toast.LENGTH_LONG).show();
-        }
-    }
+
 }

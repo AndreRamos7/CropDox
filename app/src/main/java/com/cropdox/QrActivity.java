@@ -66,7 +66,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
         mSocket.on("mensagem", onNewMessage);
         mSocket.connect();
 
-        text_view_descricao = (TextView) findViewById(R.id.text_view_descricao);
+        text_view_descricao = (TextView) findViewById(R.id.text_view_instrucao);
         mImageViewQR = (ImageView) findViewById(R.id.imageViewQR);
         cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.cameraQR);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);

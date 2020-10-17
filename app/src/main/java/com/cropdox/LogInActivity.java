@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.io.File;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LogInActivity ==";
@@ -51,7 +54,10 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        String diretorio_cropDox =  get_endereco_diretorio_cropDox();
+        Toast.makeText(this, "Diretório DropDox: " + diretorio_cropDox, Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -162,5 +168,23 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
     }
+
+    /**
+     * //pega caminho do diretorio_cropDox e cria um quando não existe
+     * @return o caminho do diretório
+     */
+    private String get_endereco_diretorio_cropDox() {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File meu_diretorio = new File(root + "/CropDox");
+
+        if (!meu_diretorio.exists()){
+            meu_diretorio.mkdir();
+            // If you require it to make the entire directory path including parents,
+            // use directory.mkdirs(); here instead.
+        }
+        Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
+        return meu_diretorio.toString();
+    }
+
 
 }
