@@ -6,11 +6,9 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 import com.cropdox.model.FileInfo;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
-import com.cropdox.utilitarios.RemoteUploader;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -39,7 +36,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,7 +47,6 @@ import retrofit2.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /*
 Classe da Fase 2 do cropdox utilizada para tirar foto e salvar no diretório do celular.
@@ -66,8 +61,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private final String TAG = "Genial";
     private Mat foto  = null;
     private Rect rect_foto = new Rect();
-    private ImageView mImageView;
-    private ImageView mImageViewMask;
+    private ImageView camera_imageViewPhoto;
+    private ImageView camera_preview;
     private LinearLayout painel_fundo;
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private int touch_x;
@@ -81,7 +76,12 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        email_do_usuario_logado = "andre.rammos7@gmail.com";
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email_do_usuario_logado = extras.getString("email_do_usuario_logado");
+        }
+        Toast.makeText(this, "User in CameraActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
@@ -118,8 +118,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
         Button btn_play = (Button) findViewById(R.id.camera_button);
         Button next_btn = (Button) findViewById(R.id.next_button);
-        mImageView = (ImageView) findViewById(R.id.camera_imageViewPhoto);
-        mImageViewMask = (ImageView) findViewById(R.id.camera_preview);
+        camera_imageViewPhoto = (ImageView) findViewById(R.id.camera_imageViewPhoto);
+        camera_preview = (ImageView) findViewById(R.id.camera_preview);
 
         cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.camera_cv_cropdox);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -175,7 +175,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                     public void onResponse(Call<FileInfo> call, retrofit2.Response<FileInfo> response) {
                         Toast.makeText(CameraActivity.this, "response.message(): " + response.message(), Toast.LENGTH_SHORT).show();
                         if(response.isSuccessful()){
-                            Toast.makeText(CameraActivity.this, "Upload realizado com sucesso", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CameraActivity.this, "Upload realizado com sucesso!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
@@ -237,10 +237,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             Bitmap analyzed = Bitmap.createBitmap(foto.cols(), foto.rows(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(foto, analyzed);
             foto.release();
-            //SHOW IMAGE
-            //Bitmap cortado = cortarBitmap(rect_foto.x, rect_foto.y, rect_foto.width, rect_foto.height, analyzed);
-            mImageView.setImageBitmap(analyzed);
-
+            camera_imageViewPhoto.setImageBitmap(analyzed);
             try {
                 saveImage(analyzed);
             } catch (IOException e) {
@@ -266,7 +263,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
-            enviarImagem();
+            this.enviarImagem();
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -287,17 +284,15 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private File createImageFile() throws IOException {
         // Create an image file name
         String root = Environment.getExternalStorageDirectory().toString();
-        File meu_diretorio = new File(root + "/CropDox");
-
+        File diretorio_mobile = new File(root + "/CropDox");
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = email_do_usuario_logado;//"CropDox_" + timeStamp + "_";
-        //File storageDir = meu_diretorio;
+        //File storageDir = diretorio_mobile;
         File image = new File(
-                meu_diretorio,      /* directory */
+                diretorio_mobile,      /* directory */
                 imageFileName +  /* prefix */
                         ".jpg"        /* suffix */
         );
-
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
@@ -346,18 +341,26 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-
         Rect rect = new Rect(frame.cols(), frame.rows(), frame.width(), frame.height());
         rect_foto = rect;
         foto = frame.clone();
 
-        Imgproc.putText(frame, "Captured: " + frame.size(), new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
+        escrever_na_tela("Captured: " + foto.size());
+        //Imgproc.putText(frame, "Captured: " + frame.size(), new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
         Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, analyzed);
         //SHOW IMAGE
-        setImage(mImageViewMask, analyzed);
+        setImage(camera_preview, analyzed);
 
         return frame;
+    }
+    /**
+     * Mostra o texto na tela no frame especificado
+     *
+     */
+    public void escrever_na_tela(String texto){
+        Mat frame = foto;
+        Imgproc.putText(frame, "Captured: " + texto, new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
     }
 
     @Override

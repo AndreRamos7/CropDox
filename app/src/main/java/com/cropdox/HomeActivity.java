@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            email_do_usuario_logado = extras.getString("email");
+            email_do_usuario_logado = extras.getString("email_do_usuario_logado");
         }
 
         //Remove a title bar
@@ -70,25 +70,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /** Called when the user taps the Send button */
     public void iniciarCaptura(View view) {
+        Toast.makeText(this, "User in HomeActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(this, CameraActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
         startActivity(intent);
     }
     /** Called when the user taps the Send button */
     public void iniciarCapturaOpenCV(View view) {
         Intent intent = new Intent(this, CamActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+        //intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
         startActivity(intent);
     }
 
     /** Called when the user taps the Send button */
     public void iniciarCapturaQR(View view) {
         Intent intent = new Intent(this, QrActivity.class);
-        intent.putExtra("email", email_do_usuario_logado);
+        intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
         startActivity(intent);
     }
 

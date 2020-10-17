@@ -124,7 +124,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         //hideProgressBar();
         if (user != null) {
             String email = user.getEmail();
-            Toast.makeText(this, "User " + email, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
             redirecionarParaHome(email);
         } else {
             Toast.makeText(this, "User: null", Toast.LENGTH_SHORT).show();
@@ -133,7 +133,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
     public void redirecionarParaHome(String email) {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("email", email);
+        intent.putExtra("email_do_usuario_logado", email);
         startActivity(intent);
 
     }

@@ -56,9 +56,10 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String email = extras.getString("email_do_usuario_logado");
-            //nome do usuário logado
             email_do_usuario_logado = email;
         }
+        Toast.makeText(this, "User in QrActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
+
         qr_ja_reconhecido = false;
 
         mSocket.on("mensagem", onNewMessage);
@@ -169,19 +170,6 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    /*JSONObject data = (JSONObject) args[0];
-                    String username;
-                    String message;
-                    try {
-                        username = data.getString("username");
-                        message = data.getString("message");
-                    } catch (JSONException e) {
-                        return;
-                    }*/
-
-                    // add the message to view
-                    //Toast.makeText(getApplicationContext(), "IO socket " + message, Toast.LENGTH_LONG).show();
-                    //addMessage(username, message);
                     addMessage((String) args[0].toString());
                 }
             });
