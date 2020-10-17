@@ -345,7 +345,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         rect_foto = rect;
         foto = frame.clone();
 
-        escrever_na_tela("Captured: " + foto.size());
+        escrever_na_tela("Captured: " + frame.size(), frame);
         //Imgproc.putText(frame, "Captured: " + frame.size(), new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
         Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, analyzed);
@@ -358,8 +358,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
      * Mostra o texto na tela no frame especificado
      *
      */
-    public void escrever_na_tela(String texto){
-        Mat frame = foto;
+    public void escrever_na_tela(String texto, Mat frame){
         Imgproc.putText(frame, "Captured: " + texto, new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
     }
 
