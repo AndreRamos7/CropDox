@@ -39,6 +39,9 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -140,8 +143,11 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 }
             }
         };
+        get_endereco_diretorio_cropDox();
 
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
+        next_btn.animate().rotation(next_btn.getRotation() - 90).start();
+
         btn_play.setOnClickListener(this);
         next_btn.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
@@ -281,21 +287,32 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         this.sendBroadcast(mediaScanIntent);
     }
 
+    public String md5(String senha) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        BigInteger hash = new BigInteger(1, md.digest(senha.getBytes()));
+        return hash.toString(16);
+    }
+
     private File createImageFile() throws IOException {
-        // Create an image file name
-        String root = Environment.getExternalStorageDirectory().toString();
-        File diretorio_mobile = new File(root + "/CropDox");
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = email_do_usuario_logado;//"CropDox_" + timeStamp + "_";
-        //File storageDir = diretorio_mobile;
-        File image = new File(
-                diretorio_mobile,      /* directory */
-                imageFileName +  /* prefix */
-                        ".jpg"        /* suffix */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+        try { // Create an image file name
+            String root = Environment.getExternalStorageDirectory().toString();
+            File diretorio_mobile = new File(root + "/CropDox");
+            //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = this.md5(email_do_usuario_logado);
+
+            //File storageDir = diretorio_mobile;
+            File image = new File(
+                    diretorio_mobile,      /* directory */
+                    imageFileName +  /* prefix */
+                            ".jpg"        /* suffix */
+            );
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = image.getAbsolutePath();
+            return image;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

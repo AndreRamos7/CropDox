@@ -8,6 +8,8 @@
     <string name="str_btn_sair">Sair</string>
     <string name="str_btn_desconnect">Desconectar</string>
 
+    <string name="str_txtvw_consentimento">Fazendo login com sua conta Google, você concorda com os termos de uso deste aplicativo.</string>
+
     <string name="str_about">Sobre</string>
     <string name="str_video">Video doc Extrator (New)</string>
     <string name="instrucao_qr">Acesse cropdox.com no seu computador</string>

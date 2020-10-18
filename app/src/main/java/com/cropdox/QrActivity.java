@@ -40,8 +40,8 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
 
     {
         try {
-            mSocket = IO.socket("http://192.168.0.107/");
-            //mSocket = IO.socket("https://cropdox.com/");
+            //mSocket = IO.socket("http://192.168.0.107/");
+            mSocket = IO.socket("https://cropdox.com/");
             Log.d("SOCKET.IO: ", "conectou");
         } catch (URISyntaxException e) {
             Log.e("SOCKET.IO: ", "nao conectou");

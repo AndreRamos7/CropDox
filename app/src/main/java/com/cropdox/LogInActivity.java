@@ -115,7 +115,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     private void revokeAccess() {
         // Firebase sign out
         mAuth.signOut();
-
         // Google revoke access
         mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
@@ -149,10 +148,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
-        } else if (i == R.id.signOutButton) {
-            signOut();
-        } else if (i == R.id.disconnectButton) {
-            revokeAccess();
         }
     }
     private void signOut() {

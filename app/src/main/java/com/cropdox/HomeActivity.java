@@ -1,5 +1,6 @@
 package com.cropdox;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -14,10 +15,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String EXTRA_MESSAGE = "com.cropdox.MESSAGE";
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private String email_do_usuario_logado;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         textHtml.setText(textoEmHtml);
         textView_saudacoes.setText("Olá, " + email_do_usuario_logado + "! Seja Bem-vindo!");
 
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         btn_inicial.setOnClickListener(this);
         btn_cv.setOnClickListener(this);
         btn_qr.setOnClickListener(this);
@@ -70,15 +93,50 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btn_iniciar){
-            iniciarCaptura(v);
-        }else if(v.getId() == R.id.btn_sair) {
-            iniciarCapturaQR(v);
-        }else if(v.getId() == R.id.btn_desconnect){
-            iniciarCapturaOpenCV(v);
-            //Toast.makeText(this.getApplicationContext(), "Função em desenvolvimento.", Toast.LENGTH_LONG).show();
+        int i = v.getId();
+        if (i == R.id.signOutButton) {
+            signOut();
+        } else if (i == R.id.disconnectButton) {
+            revokeAccess();
         }
     }
+    private void revokeAccess() {
+        // Firebase sign out
+        mAuth.signOut();
+        // Google revoke access
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
+                    }
+                });
+    }
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
+                    }
+                });
+    }
+
+    private void updateUI(FirebaseUser user) {
+        //hideProgressBar();
+        if (user != null) {
+            String email = user.getEmail();
+            Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "User: null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /** Called when the user taps the Send button */
     public void iniciarCaptura(View view) {
         Toast.makeText(this, "User in HomeActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
