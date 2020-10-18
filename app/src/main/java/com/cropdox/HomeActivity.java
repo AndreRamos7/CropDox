@@ -94,9 +94,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.signOutButton) {
+        if (i == R.id.btn_iniciar) {
+            iniciarCaptura(v);
+        }else if (i == R.id.btn_sair) {
             signOut();
-        } else if (i == R.id.disconnectButton) {
+        }else if (i == R.id.btn_desconnect) {
             revokeAccess();
         }
     }
