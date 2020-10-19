@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auth0.jwt.algorithms.Algorithm;
 import com.cropdox.remote.APIUtils;
 
 import org.json.JSONException;
@@ -28,6 +29,9 @@ import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class QrActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2{
     private CameraBridgeViewBase cameraBridgeViewBase;
@@ -115,6 +119,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
          Mat frame = inputFrame.rgba();
          Mat img = new Mat();
          Mat points = new Mat();
+
          QRCodeDetector qrCodeDetector = new QRCodeDetector();
          String textoQr = qrCodeDetector.detectAndDecode(frame);
          //Toast.makeText(this.getApplicationContext(),textoQr,Toast.LENGTH_LONG).show();
@@ -140,6 +145,11 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     * */
     private void enviar_id_browser_ao_servidor(String browser_id_qr) throws JSONException {
         //String message = "attemptSend ANDREOID";
+        try {
+            email_do_usuario_logado = APIUtils.md5(email_do_usuario_logado);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         String jsonString = "{url: \"/imagem_do_servidor\", cel_id: \"" +
                 mSocket.id() +
                 "\", browser_id: \"" +
@@ -147,14 +157,12 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
                 "\", email_do_usuario_logado: \"" +
                 email_do_usuario_logado +
                 "\"}";
-        JSONObject listasJSON = new JSONObject(jsonString);
-        /*
-        if (TextUtils.isEmpty(message)) {
-            return;
-        }*/
-        mSocket.emit("mensagem android", listasJSON);
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        mSocket.emit("mensagem android", jsonObject);
         qr_ja_reconhecido = true;
-        Log.v(QR_GENIAL,"listaJSON: " + listasJSON.toString());
+        mostrarResultado();
+
     }
     /**
      * Mostra o resultado do processo de exibição após o QR code

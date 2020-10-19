@@ -8,8 +8,8 @@ android {
         applicationId "com.cropdox"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 2
-        versionName "2.0"
+        versionCode 3
+        versionName "3.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.google.code.gson:gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.auth0:java-jwt:3.11.0'
 
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-core:17.0.1'

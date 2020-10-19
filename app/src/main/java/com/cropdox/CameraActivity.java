@@ -287,18 +287,17 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         this.sendBroadcast(mediaScanIntent);
     }
 
-    public String md5(String senha) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        BigInteger hash = new BigInteger(1, md.digest(senha.getBytes()));
-        return hash.toString(16);
-    }
-
     private File createImageFile() throws IOException {
          // Create an image file name
         String root = Environment.getExternalStorageDirectory().toString();
         File diretorio_mobile = new File(root + "/CropDox");
         //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = email_do_usuario_logado;
+        String imageFileName = null; //
+        try {
+            imageFileName = APIUtils.md5(email_do_usuario_logado);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         //File storageDir = diretorio_mobile;
         File image = new File(
@@ -309,10 +308,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
-
-
     }
-
 
     private void setImage(final ImageView imgV, final Bitmap bmp){
         runOnUiThread(new Runnable() {

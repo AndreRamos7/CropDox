@@ -113,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         updateUI(null);
                     }
                 });
+        finish();
     }
     private void signOut() {
         // Firebase sign out
@@ -126,6 +127,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         updateUI(null);
                     }
                 });
+        finish();
     }
 
     private void updateUI(FirebaseUser user) {
