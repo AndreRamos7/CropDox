@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cropdox.remote.APIUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.BaseLoaderCallback;
@@ -137,7 +139,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     * Envia socketid do browser ao servidor no formato JSON
     * */
     private void enviar_id_browser_ao_servidor(String browser_id_qr) throws JSONException {
-        String message = "attemptSend ANDREOID";
+        //String message = "attemptSend ANDREOID";
         String jsonString = "{url: \"/imagem_do_servidor\", cel_id: \"" +
                 mSocket.id() +
                 "\", browser_id: \"" +
@@ -146,10 +148,10 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
                 email_do_usuario_logado +
                 "\"}";
         JSONObject listasJSON = new JSONObject(jsonString);
-
+        /*
         if (TextUtils.isEmpty(message)) {
             return;
-        }
+        }*/
         mSocket.emit("mensagem android", listasJSON);
         qr_ja_reconhecido = true;
         Log.v(QR_GENIAL,"listaJSON: " + listasJSON.toString());
@@ -161,10 +163,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
         Intent intent = new Intent(this, TransferActivity.class);
         intent.putExtra("key", qr_ja_reconhecido);
         startActivity(intent);
-
     }
-
-
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -176,10 +175,6 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
             });
         }
     };
-
-    private void addMessage(String username, String message) {
-        text_view_descricao.setText("username: " + username + "; message: " + message);
-    }
 
     private void addMessage(String mensagem) {
         text_view_descricao.setText("mensagemmm: " + mensagem);

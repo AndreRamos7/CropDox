@@ -294,25 +294,23 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     }
 
     private File createImageFile() throws IOException {
-        try { // Create an image file name
-            String root = Environment.getExternalStorageDirectory().toString();
-            File diretorio_mobile = new File(root + "/CropDox");
-            //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = this.md5(email_do_usuario_logado);
+         // Create an image file name
+        String root = Environment.getExternalStorageDirectory().toString();
+        File diretorio_mobile = new File(root + "/CropDox");
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = email_do_usuario_logado;
 
-            //File storageDir = diretorio_mobile;
-            File image = new File(
-                    diretorio_mobile,      /* directory */
-                    imageFileName +  /* prefix */
-                            ".jpg"        /* suffix */
-            );
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = image.getAbsolutePath();
-            return image;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
+        //File storageDir = diretorio_mobile;
+        File image = new File(
+                diretorio_mobile,      /* directory */
+                imageFileName +  /* prefix */
+                        ".jpg"        /* suffix */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+
+
     }
 
 
