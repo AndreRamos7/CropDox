@@ -1,14 +1,15 @@
 package com.cropdox;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -39,11 +40,7 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +63,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private Rect rect_foto = new Rect();
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
-    private LinearLayout painel_fundo;
+    private ConstraintLayout painel_fundo;
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private int touch_x;
     private int touch_y;
@@ -117,14 +114,15 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         }*/
         fileService = APIUtils.getFileService();
 
-        painel_fundo = (LinearLayout) findViewById(R.id.camera_painel_fundo);
+        painel_fundo = (ConstraintLayout) findViewById(R.id.camera_painel_fundo);
 
         Button btn_play = (Button) findViewById(R.id.camera_button);
         Button next_btn = (Button) findViewById(R.id.next_button);
-        camera_imageViewPhoto = (ImageView) findViewById(R.id.camera_imageViewPhoto);
-        camera_preview = (ImageView) findViewById(R.id.camera_preview);
+        camera_imageViewPhoto = (ImageView) findViewById(R.id.camera_imageView_photo);
+        //camera_preview = (ImageView) findViewById(R.id.camera_preview);
+        Button prev_button = (Button) findViewById(R.id.prev_button);
 
-        cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.camera_cv_cropdox);
+        cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.camera_opencv);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
         cameraBridgeViewBase.setCvCameraViewListener(this);
         //cameraBridgeViewBase.setCameraIndex(1);
@@ -145,13 +143,13 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         };
         get_endereco_diretorio_cropDox();
 
+        prev_button.animate().rotation(prev_button.getRotation() - 90).start();
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
         next_btn.animate().rotation(next_btn.getRotation() - 90).start();
 
         btn_play.setOnClickListener(this);
         next_btn.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
-
     }
 
     @Override
@@ -238,7 +236,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.camera_button){
+        if(v.getId() == R.id.prev_button){
+            finish();
+        }else if(v.getId() == R.id.camera_button){
             if(rect_foto.width == 0) return;
             Bitmap analyzed = Bitmap.createBitmap(foto.cols(), foto.rows(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(foto, analyzed);
@@ -277,15 +277,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         }
     }
 
-
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
 
     private File createImageFile() throws IOException {
          // Create an image file name
@@ -354,6 +345,10 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Mat frame =  inputFrame.rgba();
         Rect rect = new Rect(frame.cols(), frame.rows(), frame.width(), frame.height());
         rect_foto = rect;
+        Point ponto = new Point();
+        ponto.x = frame.cols()/2;
+        ponto.y = frame.rows()/2;
+        Mat rotacao = Imgproc.getRotationMatrix2D(ponto, 120, 1.0);
         foto = frame.clone();
 
         escrever_na_tela("Captured: " + frame.size(), frame);
@@ -361,7 +356,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, analyzed);
         //SHOW IMAGE
-        setImage(camera_preview, analyzed);
+        //setImage(camera_preview, analyzed);
 
         return frame;
     }
@@ -370,7 +365,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
      *
      */
     public void escrever_na_tela(String texto, Mat frame){
-        Imgproc.putText(frame, "Captured: " + texto, new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
+        Imgproc.putText(frame, texto, new Point(frame.cols() / 5 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
     }
 
     @Override

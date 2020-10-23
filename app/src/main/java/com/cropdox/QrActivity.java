@@ -185,7 +185,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     };
 
     private void addMessage(String mensagem) {
-        text_view_descricao.setText("mensagemmm: " + mensagem);
+        text_view_descricao.setText("Servidor Node diz: " + mensagem);
     }
 
     private void setImage(final ImageView imgV, final Bitmap bmp){

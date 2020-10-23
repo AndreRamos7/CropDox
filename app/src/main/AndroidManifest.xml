@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cropdox">
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +14,6 @@
             android:theme="@style/AppCompat.TelaCheia">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -61,7 +59,17 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+    <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-5217265578005284/9873449037"/>
+       -->
 
+    <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713
+    <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-3940256099942544/6300978111"/>
+    -->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -83,7 +91,7 @@
         android:required="false" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

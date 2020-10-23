@@ -9,74 +9,69 @@
     tools:context=".CameraActivity">
 
     <org.opencv.android.JavaCameraView
-        android:id="@+id/camera_cv_cropdox"
+        android:id="@+id/camera_opencv"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="visible" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/camera_painel_fundo"
         android:layout_width="match_parent"
-        android:layout_height="429dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/sobrepoe_camera"
-            android:layout_width="541dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:id="@+id/layout_espaco_vazio_camera"
+            android:layout_width="0dp"
+            android:layout_height="549dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"></LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/camera_controles"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="408dp"
+            android:layout_height="139dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/layout_espaco_vazio_camera">
 
-            <ImageView
-                android:id="@+id/camera_imageViewPhoto"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/prev_button"
+                android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:contentDescription="@string/app_name" />
+                android:background="@android:drawable/ic_media_rew"
+                android:clickable="true"
+                android:focusable="true"
+                android:selectAllOnFocus="true" />
 
             <Button
                 android:id="@+id/camera_button"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_below="@+id/camera_imageViewPhoto"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
                 android:background="@android:drawable/ic_menu_camera"
                 android:clickable="true"
                 android:focusable="true"
                 android:selectAllOnFocus="true" />
 
-            <ImageView
-                android:id="@+id/camera_preview"
-                android:layout_width="match_parent"
-                android:layout_height="236dp"
-                android:layout_below="@+id/camera_button"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="0dp"
-                android:contentDescription="@string/app_name" />
-
             <Button
                 android:id="@+id/next_button"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_below="@+id/camera_button"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
                 android:background="@android:drawable/ic_media_ff"
                 android:clickable="true"
                 android:focusable="true"
                 android:selectAllOnFocus="true" />
-        </RelativeLayout>
-    </LinearLayout>
+
+            <ImageView
+                android:id="@+id/camera_imageView_photo"
+                android:layout_width="79dp"
+                android:layout_height="100dp"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
