@@ -15,6 +15,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -29,6 +34,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private String email_do_usuario_logado;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (extras != null) {
             email_do_usuario_logado = extras.getString("email_do_usuario_logado");
         }
-
+        setContentView(R.layout.activity_home);
         //Remove a title bar
         //this.requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
@@ -62,10 +68,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
         }
-        setContentView(R.layout.activity_home);
-        Button btn_inicial = (Button) findViewById(R.id.btn_iniciar);
-        Button btn_qr = (Button) findViewById(R.id.btn_sair);
-        Button btn_cv = (Button) findViewById(R.id.btn_desconnect);
+
+        
+        Button btn_iniciar = (Button) findViewById(R.id.btn_iniciar);
+        Button btn_sair = (Button) findViewById(R.id.btn_sair);
+        //Button btn_desconnect = (Button) findViewById(R.id.btn_desconnect);
         TextView textView_saudacoes = (TextView) findViewById(R.id.text_view_saudacoes);
 
         //possibilita exibir Texto em HTML em textViews
@@ -86,9 +93,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        btn_inicial.setOnClickListener(this);
-        btn_cv.setOnClickListener(this);
-        btn_qr.setOnClickListener(this);
+        btn_iniciar.setOnClickListener(this);
+        //btn_desconnect.setOnClickListener(this);
+        btn_sair.setOnClickListener(this);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                Toast.makeText(HomeActivity.this, "Anúncio", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mAdView = findViewById(R.id.adView_home_activity);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+
     }
 
     @Override
@@ -98,8 +118,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             iniciarCaptura(v);
         }else if (i == R.id.btn_sair) {
             signOut();
-        }else if (i == R.id.btn_desconnect) {
-            revokeAccess();
         }
     }
     private void revokeAccess() {

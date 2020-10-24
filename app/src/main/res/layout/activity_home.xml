@@ -36,20 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_descricao" />
 
-    <Button
-        android:id="@+id/btn_desconnect"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/botao_costumizado"
-        android:text="@string/str_btn_desconnect"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/btn_sair"
-        app:layout_constraintStart_toStartOf="@+id/btn_sair"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sair" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="184dp"
@@ -78,16 +64,29 @@
 
     <TextView
         android:id="@+id/text_view_saudacoes"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:paddingStart="28sp"
         android:paddingEnd="28sp"
         android:text="@string/str_textView_saudacoes"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adView_home_activity"
         app:layout_constraintEnd_toEndOf="@+id/text_view_descricao"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/text_view_descricao"
-        app:layout_constraintTop_toBottomOf="@+id/btn_desconnect"
-        app:layout_constraintVertical_bias="0.898" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_sair"
+        app:layout_constraintVertical_bias="0.968" />
+
+    <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView_home_activity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-5217265578005284/9873449037"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+
+        <!-- Sample AdMob App ID: ca-app-pub-5217265578005284~5331051873 -->
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-5217265578005284~5331051873"/>
+
+
         <activity android:name=".LogInActivity"></activity>
         <activity
             android:name=".SplashScreenActivity"
@@ -58,18 +66,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application>
-    <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713
-       <meta-data
-           android:name="com.google.android.gms.ads.APPLICATION_ID"
-           android:value="ca-app-pub-5217265578005284/9873449037"/>
-       -->
 
-    <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713
-    <meta-data
-        android:name="com.google.android.gms.ads.APPLICATION_ID"
-        android:value="ca-app-pub-3940256099942544/6300978111"/>
-    -->
+    </application>
+
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
