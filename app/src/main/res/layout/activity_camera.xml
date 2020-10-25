@@ -42,7 +42,7 @@
                 android:id="@+id/prev_button"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:background="@android:drawable/ic_media_rew"
+                android:background="@android:drawable/ic_menu_close_clear_cancel"
                 android:clickable="true"
                 android:focusable="true"
                 android:selectAllOnFocus="true" />

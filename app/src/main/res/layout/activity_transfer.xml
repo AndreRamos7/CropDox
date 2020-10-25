@@ -12,10 +12,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/transfer_result"
+        android:textColor="#330606"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView_check"
+        app:layout_constraintVertical_bias="0.201" />
+
+    <ImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="307dp"
+        android:layout_height="253dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/str_description_logotipo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo2" />
+
+    <ImageView
+        android:id="@+id/imageView_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:contentDescription="@string/str_description_sucesso"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_logo"
+        app:srcCompat="@drawable/check_icon" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

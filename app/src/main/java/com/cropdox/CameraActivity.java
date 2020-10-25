@@ -3,7 +3,6 @@ package com.cropdox;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
@@ -35,6 +33,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
@@ -59,7 +58,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
     private final String TAG = "Genial";
-    private Mat foto  = null;
+    private Mat foto_capturada = null;
     private Rect rect_foto = new Rect();
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
@@ -71,6 +70,11 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private final String GENIAL_LOG = "GENIAL";
     private String currentPhotoPath;
     private String email_do_usuario_logado;
+    private boolean clicado;
+
+    public CameraActivity() {
+        clicado = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +109,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 // result of the request.
             }
         } else {
-            Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
+            Log.v(GENIAL_LOG, "Permissões concedidas!");
+            //Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
         }
         /*
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -147,15 +152,51 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
         next_btn.animate().rotation(next_btn.getRotation() - 90).start();
 
+        prev_button.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         next_btn.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
-    }
 
+    }
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.prev_button){
+            finish();
+        }else if(v.getId() == R.id.camera_button){
+            //clicado = true;
+            if(rect_foto.width == 0)
+                return;
+            /*Point ponto_central = new Point();
+            int width = foto_capturada.cols();
+            int heigth = foto_capturada.rows();
+            ponto_central.x = width/2;
+            ponto_central.y = heigth/2;
+            Mat rotacao = Imgproc.getRotationMatrix2D(ponto_central, 90, 1.0);
+            Mat foto_rotacionada = new Mat();
+            Imgproc.warpAffine(foto_capturada, foto_rotacionada, rotacao, new Size(heigth, width));
+            rotacao.release();
+*/
+            Bitmap bitmap_foto_capturada = Bitmap.createBitmap(foto_capturada.cols(), foto_capturada.rows(), Bitmap.Config.RGB_565);
+            Utils.matToBitmap(foto_capturada, bitmap_foto_capturada);
+            foto_capturada.release();
+            camera_imageViewPhoto.setImageBitmap(bitmap_foto_capturada);
+            try {
+                saveImage(bitmap_foto_capturada);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else if(v.getId() == R.id.next_button){
+            iniciarCapturaQr(v);
+            Log.e(GENIAL_LOG, "NextButton!");
+            //Toast.makeText(this.getApplicationContext(), "NextButton!", Toast.LENGTH_LONG).show();
+        }
+    }
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_UP) {
             view.setBackgroundResource(android.R.drawable.ic_menu_camera);
+            //clicado = false;
         } else if(event.getAction() == MotionEvent.ACTION_DOWN) {
             view.setBackgroundResource(android.R.drawable.ic_menu_add);
         }
@@ -177,15 +218,17 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 call.enqueue(new Callback<FileInfo>() {
                     @Override
                     public void onResponse(Call<FileInfo> call, retrofit2.Response<FileInfo> response) {
-                        Toast.makeText(CameraActivity.this, "response.message(): " + response.message(), Toast.LENGTH_SHORT).show();
+                        Log.v(GENIAL_LOG, "response.message(): " + response.message());
+                        //Toast.makeText(CameraActivity.this, "response.message(): " + response.message(), Toast.LENGTH_SHORT).show();
                         if(response.isSuccessful()){
-                            Toast.makeText(CameraActivity.this, "Upload realizado com sucesso!!", Toast.LENGTH_SHORT).show();
+                            Log.v(GENIAL_LOG,"Upload realizado com sucesso!!");
+                            //Toast.makeText(CameraActivity.this, "Upload realizado com sucesso!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<FileInfo> call, Throwable t) {
-                        Log.e(GENIAL_LOG, t.getMessage());
-                        Toast.makeText(CameraActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e(GENIAL_LOG, "Erro: " +  t.getMessage());
+                        //Toast.makeText(CameraActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -201,7 +244,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             // If you require it to make the entire directory path including parents,
             // use directory.mkdirs(); here instead.
         }
-        Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
+        Log.v(GENIAL_LOG, "Endereço obtido com sucesso!");
+        //Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
         return meu_diretorio.toString();
     }
 
@@ -234,28 +278,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     }
 
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.prev_button){
-            finish();
-        }else if(v.getId() == R.id.camera_button){
-            if(rect_foto.width == 0) return;
-            Bitmap analyzed = Bitmap.createBitmap(foto.cols(), foto.rows(), Bitmap.Config.RGB_565);
-            Utils.matToBitmap(foto, analyzed);
-            foto.release();
-            camera_imageViewPhoto.setImageBitmap(analyzed);
-            try {
-                saveImage(analyzed);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }else if(v.getId() == R.id.next_button){
-            iniciarCapturaQr(v);
-            Toast.makeText(this.getApplicationContext(), "NextButton!", Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void saveImage(Bitmap finalBitmap) throws IOException {
         File file = createImageFile();
         //if (file.exists()) file.delete ();
@@ -268,7 +290,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
+            Log.v(GENIAL_LOG, "Salvo nos arquivos!");
+            //Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
             this.enviarImagem();
             out.flush();
             out.close();
@@ -345,19 +368,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Mat frame =  inputFrame.rgba();
         Rect rect = new Rect(frame.cols(), frame.rows(), frame.width(), frame.height());
         rect_foto = rect;
-        Point ponto = new Point();
-        ponto.x = frame.cols()/2;
-        ponto.y = frame.rows()/2;
-        Mat rotacao = Imgproc.getRotationMatrix2D(ponto, 120, 1.0);
-        foto = frame.clone();
-
-        escrever_na_tela("Captured: " + frame.size(), frame);
-        //Imgproc.putText(frame, "Captured: " + frame.size(), new Point(frame.cols() / 3 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
-        Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(frame, analyzed);
-        //SHOW IMAGE
-        //setImage(camera_preview, analyzed);
-
+        foto_capturada = frame.clone();
+        escrever_na_tela("CropDox: " + frame.size(), frame);
         return frame;
     }
     /**

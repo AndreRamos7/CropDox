@@ -22,4 +22,6 @@
     <string name="sign_out">Sair</string>
     <string name="disconnect">Discoonectar</string>
     <string name="str_textView_saudacoes">Seja Bem-vindo!</string>
+    <string name="str_description_logotipo">logotipo</string>
+    <string name="str_description_sucesso">sucesso</string>
 </resources>

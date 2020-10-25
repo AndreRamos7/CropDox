@@ -38,9 +38,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="184dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="148dp"
+        android:layout_marginTop="14dp"
         android:contentDescription="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -52,7 +52,7 @@
         android:id="@+id/text_view_descricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="14dp"
         android:importantForAutofill="no"
         android:paddingStart="20sp"
         android:paddingEnd="20sp"
@@ -66,15 +66,15 @@
         android:id="@+id/text_view_saudacoes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:paddingStart="28sp"
         android:paddingEnd="28sp"
         android:text="@string/str_textView_saudacoes"
-        app:layout_constraintBottom_toTopOf="@+id/adView_home_activity"
         app:layout_constraintEnd_toEndOf="@+id/text_view_descricao"
         app:layout_constraintStart_toStartOf="@+id/text_view_descricao"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sair"
-        app:layout_constraintVertical_bias="0.968" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_sair" />
 
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/9873449037" <== id de bloco  para produção-->
     <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView_home_activity"
@@ -86,7 +86,9 @@
         app:adUnitId="ca-app-pub-5217265578005284/9873449037"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_saudacoes"
+        app:layout_constraintVertical_bias="0.935"
         tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
 </androidx.constraintlayout.widget.ConstraintLayout>

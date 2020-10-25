@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private AdView mAdView;
+    private final String GENIAL_LOG = "GENIAL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             // app-defined int constant. The callback method gets the
             // result of the request.
         } else {
-            Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
+            Log.v(GENIAL_LOG, "Permissões concedidas!");
+            //Toast.makeText(this.getApplicationContext(), "Permissões concedidas!", Toast.LENGTH_LONG).show();;
         }
 
         

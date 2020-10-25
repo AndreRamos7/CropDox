@@ -126,8 +126,11 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
          Log.v(QR_GENIAL, "textoQr: " + textoQr);
 
          try {
-             if (!textoQr.equalsIgnoreCase("")) {
+             if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
                  enviar_id_browser_ao_servidor(textoQr);
+                 qr_ja_reconhecido = true;
+             }else{
+                 qr_ja_reconhecido = false;
              }
          } catch (JSONException e) {
              Log.e(QR_GENIAL, "JSONException " + e.getMessage());
