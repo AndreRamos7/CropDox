@@ -14,13 +14,6 @@
         android:layout_height="fill_parent"
         android:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/imageViewQR"
-        android:layout_width="156dp"
-        android:layout_height="293dp"
-        android:contentDescription="@string/app_name"
-        android:visibility="invisible" />
-
     <TextView
         android:id="@+id/text_view_instrucao"
         android:layout_width="match_parent"
@@ -31,11 +24,18 @@
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="20dp"
-        android:background="#F3F4C6"
+        android:background="@color/colorAccent"
         android:gravity="center|center_horizontal|center_vertical"
         android:importantForAutofill="no"
         android:text="@string/instrucao_qr"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/imageView_miraQR"
+        android:layout_width="match_parent"
+        android:layout_height="541dp"
+        android:contentDescription="@string/str_description_miraQR"
+        app:srcCompat="?android:attr/listChoiceIndicatorMultiple" />
 </FrameLayout>

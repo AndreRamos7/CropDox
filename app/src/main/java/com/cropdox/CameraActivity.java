@@ -59,7 +59,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private BaseLoaderCallback baseLoaderCallback;
     private final String TAG = "Genial";
     private Mat foto_capturada = null;
-    private Rect rect_foto = new Rect();
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
     private ConstraintLayout painel_fundo;
@@ -164,7 +163,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             finish();
         }else if(v.getId() == R.id.camera_button){
             //clicado = true;
-            if(rect_foto.width == 0)
+            if(foto_capturada.width() == 0)
                 return;
             /*Point ponto_central = new Point();
             int width = foto_capturada.cols();
@@ -249,7 +248,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         return meu_diretorio.toString();
     }
 
- 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         /*touch_x = (int) event.getX();
@@ -275,7 +273,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         //String message = editText.getText().toString();
         intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
         startActivity(intent);
-
     }
 
     private void saveImage(Bitmap finalBitmap) throws IOException {
@@ -366,8 +363,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-        Rect rect = new Rect(frame.cols(), frame.rows(), frame.width(), frame.height());
-        rect_foto = rect;
         foto_capturada = frame.clone();
         escrever_na_tela("CropDox: " + frame.size(), frame);
         return frame;

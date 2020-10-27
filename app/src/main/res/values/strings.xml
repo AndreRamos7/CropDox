@@ -19,9 +19,15 @@
     <string name="transfer_result">Exibindo no seu browser!!</string>
     <string name="not_log_in">not_log_in</string>
     <string name="not_firebase_auth">not_firebase_auth</string>
-    <string name="sign_out">Sair</string>
+    <string name="sign_out">Logout</string>
     <string name="disconnect">Discoonectar</string>
     <string name="str_textView_saudacoes">Seja Bem-vindo!</string>
     <string name="str_description_logotipo">logotipo</string>
     <string name="str_description_sucesso">sucesso</string>
+    <string name="str_description_miraQR">Mira QR code</string>
+
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/9873449037" <== id de bloco grande 3º para produção-->
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/4453756926" <== id de bloco banner  para produção-->
+    <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
+    <string name="str_google_admob_id_bloco">ca-app-pub-5217265578005284/4453756926</string>
 </resources>

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +38,6 @@ import java.security.interfaces.RSAPublicKey;
 public class QrActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2{
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
-    private ImageView mImageViewQR;
     private final static String QR_GENIAL = "QR_GENIAL";
     private FpsMeter mFpsMeter;
     private Socket mSocket;
@@ -47,6 +48,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
     {
         try {
             //mSocket = IO.socket("http://192.168.0.107/");
+            email_do_usuario_logado = "cropdox";
             mSocket = IO.socket("https://cropdox.com/");
             Log.d("SOCKET.IO: ", "conectou");
         } catch (URISyntaxException e) {
@@ -73,7 +75,6 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
         mSocket.connect();
 
         text_view_descricao = (TextView) findViewById(R.id.text_view_instrucao);
-        mImageViewQR = (ImageView) findViewById(R.id.imageViewQR);
         cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.cameraQR);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
         cameraBridgeViewBase.setCvCameraViewListener(this);
@@ -135,12 +136,6 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
          } catch (JSONException e) {
              Log.e(QR_GENIAL, "JSONException " + e.getMessage());
          }
-
-         Bitmap analyzed = Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.RGB_565);
-         Utils.matToBitmap(frame, analyzed);
-         //SHOW IMAGE
-         setImage(mImageViewQR, analyzed);
-
          return frame;
     }
     /*
@@ -161,6 +156,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
                 email_do_usuario_logado +
                 "\"}";
         JSONObject jsonObject = new JSONObject(jsonString);
+
 
         mSocket.emit("mensagem android", jsonObject);
         qr_ja_reconhecido = true;

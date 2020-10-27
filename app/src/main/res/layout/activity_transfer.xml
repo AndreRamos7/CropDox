@@ -42,5 +42,23 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView_logo"
         app:srcCompat="@drawable/check_icon" />
 
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/9873449037" <== id de bloco grande 3º para produção-->
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/4453756926" <== id de bloco banner  para produção-->
+    <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView_transfer_activity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="@string/str_google_admob_id_bloco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textResult"
+        app:layout_constraintVertical_bias="0.98"
+        tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@drawable/botao_costumizado"
+        android:background="@android:color/holo_red_dark"
         android:text="@string/str_btn_sair"
         android:textColor="@android:color/background_light"
         android:textSize="20sp"
@@ -27,7 +27,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:background="@drawable/botao_costumizado"
+        android:background="@android:color/holo_green_dark"
         android:text="@string/str_btn_iniciar"
         android:textColor="@android:color/background_light"
         android:textSize="20sp"
@@ -74,7 +74,8 @@
         app:layout_constraintStart_toStartOf="@+id/text_view_descricao"
         app:layout_constraintTop_toBottomOf="@+id/btn_sair" />
 
-    <!-- app:adUnitId="ca-app-pub-5217265578005284/9873449037" <== id de bloco  para produção-->
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/9873449037" <== id de bloco grande 3º para produção-->
+    <!-- app:adUnitId="ca-app-pub-5217265578005284/4453756926" <== id de bloco banner  para produção-->
     <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView_home_activity"
@@ -83,7 +84,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-5217265578005284/9873449037"
+        app:adUnitId="@string/str_google_admob_id_bloco"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
