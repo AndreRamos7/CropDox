@@ -28,6 +28,7 @@ import java.io.File;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LogInActivity ==";
+    private static final String GENIAL_LOG = "GENIAL";
     private GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -55,7 +56,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         mAuth = FirebaseAuth.getInstance();
 
         String diretorio_cropDox =  get_endereco_diretorio_cropDox();
-        Toast.makeText(this, "Diretório DropDox: " + diretorio_cropDox, Toast.LENGTH_SHORT).show();
+        Log.v(GENIAL_LOG, "Diretório DropDox: " + diretorio_cropDox);
+        //Toast.makeText(this, "Diretório DropDox: " + diretorio_cropDox, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -129,7 +131,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         //hideProgressBar();
         if (user != null) {
             String email = user.getEmail();
-            Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
+            Log.v( GENIAL_LOG, "User in LogInActivity: " + email);
+            //Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
             redirecionarParaHome(email);
         } else {
             Toast.makeText(this, "User: null", Toast.LENGTH_SHORT).show();

@@ -103,7 +103,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-                Toast.makeText(HomeActivity.this, "Anúncio", Toast.LENGTH_SHORT).show();
+                Log.v(GENIAL_LOG, "Anúncio");
+                //Toast.makeText(HomeActivity.this, "Anúncio", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,16 +156,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //hideProgressBar();
         if (user != null) {
             String email = user.getEmail();
-            Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
+            Log.v(GENIAL_LOG, "User in LogInActivity: " + email );
+            //Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this, "User: null", Toast.LENGTH_SHORT).show();
+            Log.v(GENIAL_LOG, "User: null");
         }
     }
 
     /** Called when the user taps the Send button */
     public void iniciarCaptura(View view) {
-        Toast.makeText(this, "User in HomeActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
+        Log.v(GENIAL_LOG, "User in HomeActivity: " + email_do_usuario_logado);
+        //Toast.makeText(this, "User in HomeActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);

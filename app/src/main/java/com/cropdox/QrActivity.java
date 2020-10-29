@@ -67,7 +67,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
             String email = extras.getString("email_do_usuario_logado");
             email_do_usuario_logado = email;
         }
-        Toast.makeText(this, "User in QrActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
+        Log.v(QR_GENIAL, "User in QrActivity: " + email_do_usuario_logado);
 
         qr_ja_reconhecido = false;
 

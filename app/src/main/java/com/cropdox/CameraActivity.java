@@ -17,12 +17,16 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
@@ -35,12 +39,18 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.QRCodeDetector;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
+import java.text.BreakIterator;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import okhttp3.MediaType;
@@ -57,7 +67,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
-    private final String TAG = "Genial";
     private Mat foto_capturada = null;
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
@@ -69,22 +78,60 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private final String GENIAL_LOG = "GENIAL";
     private String currentPhotoPath;
     private String email_do_usuario_logado;
-    private boolean clicado;
+
+    private boolean modo_QR;
+    private boolean camera_button_clicado;
+
+    private Socket mSocket;
+    private boolean qr_ja_reconhecido;
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    addMessage((String) args[0].toString());
+                }
+            });
+        }
+    };
+    private LinearLayout camera_controles;
+
+    {
+        try {
+            //mSocket = IO.socket("http://192.168.0.107/");
+            email_do_usuario_logado = "cropdox";
+            mSocket = IO.socket("https://cropdox.com/");
+            Log.d("SOCKET.IO: ", "conectou");
+        } catch (URISyntaxException e) {
+            Log.e("SOCKET.IO: ", "nao conectou");
+            throw new RuntimeException(e);
+        }
+    }
 
     public CameraActivity() {
-        clicado = false;
+        mSocket.on("mensagem", onNewMessage);
+        mSocket.connect();
+    }
+
+    private void addMessage(String mensagem) {
+        Log.v(GENIAL_LOG, "Servidor Node diz: " + mensagem);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
+        camera_controles = (LinearLayout) findViewById(R.id.camera_controles);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email_do_usuario_logado = extras.getString("email_do_usuario_logado");
         }
-        Toast.makeText(this, "User in CameraActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
+        camera_button_clicado = false;
+        modo_QR = false;
+
+        Log.v(GENIAL_LOG, "User in CameraActivity: " + email_do_usuario_logado);
+        //Toast.makeText(this, "User in CameraActivity: " + email_do_usuario_logado, Toast.LENGTH_SHORT).show();
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
@@ -162,19 +209,10 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         if(v.getId() == R.id.prev_button){
             finish();
         }else if(v.getId() == R.id.camera_button){
-            //clicado = true;
+            camera_button_clicado = true;
             if(foto_capturada.width() == 0)
                 return;
-            /*Point ponto_central = new Point();
-            int width = foto_capturada.cols();
-            int heigth = foto_capturada.rows();
-            ponto_central.x = width/2;
-            ponto_central.y = heigth/2;
-            Mat rotacao = Imgproc.getRotationMatrix2D(ponto_central, 90, 1.0);
-            Mat foto_rotacionada = new Mat();
-            Imgproc.warpAffine(foto_capturada, foto_rotacionada, rotacao, new Size(heigth, width));
-            rotacao.release();
-*/
+
             Bitmap bitmap_foto_capturada = Bitmap.createBitmap(foto_capturada.cols(), foto_capturada.rows(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(foto_capturada, bitmap_foto_capturada);
             foto_capturada.release();
@@ -288,10 +326,12 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             Log.v(GENIAL_LOG, "Salvo nos arquivos!");
+
             //Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
             this.enviarImagem();
             out.flush();
             out.close();
+            modo_QR = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -332,6 +372,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     protected void onPause(){
         super.onPause();
+        modo_QR = false;
+        camera_button_clicado = false;
         if(cameraBridgeViewBase != null){
             cameraBridgeViewBase.disableView();
         }
@@ -363,16 +405,70 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-        foto_capturada = frame.clone();
-        escrever_na_tela("CropDox: " + frame.size(), frame);
+        foto_capturada = frame;
+        if(camera_button_clicado && modo_QR){
+            //camera_controles.setVisibility(View.INVISIBLE);
+            QRCodeDetector qrCodeDetector = new QRCodeDetector();
+            String textoQr = qrCodeDetector.detectAndDecode(frame);
+            Log.v(GENIAL_LOG, "textoQr: " + textoQr);
+            escrever_na_tela("EM MODO QR", frame);
+            try {
+
+                if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
+                    enviar_id_browser_ao_servidor(textoQr);
+                    qr_ja_reconhecido = true;
+                }else{
+                    qr_ja_reconhecido = false;
+                }
+            } catch (JSONException e) {
+                Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
+            }
+            return frame;
+
+            //
+            //camera_button_clicado = false;
+        }
+
         return frame;
     }
+
+    /*
+     * Envia socketid do browser ao servidor no formato JSON
+     * */
+    private void enviar_id_browser_ao_servidor(String browser_id_qr) throws JSONException {
+        //String message = "attemptSend ANDREOID";
+        try {
+            email_do_usuario_logado = APIUtils.md5(email_do_usuario_logado);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        String jsonString = "{url: \"/imagem_do_servidor\", cel_id: \"" +
+                mSocket.id() +
+                "\", browser_id: \"" +
+                browser_id_qr +
+                "\", email_do_usuario_logado: \"" +
+                email_do_usuario_logado +
+                "\"}";
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+
+        mSocket.emit("mensagem android", jsonObject);
+        qr_ja_reconhecido = true;
+        mostrarResultado();
+
+    }
+    public void mostrarResultado() {
+        Intent intent = new Intent(this, TransferActivity.class);
+        intent.putExtra("key", qr_ja_reconhecido);
+        startActivity(intent);
+    }
+
     /**
      * Mostra o texto na tela no frame especificado
      *
      */
     public void escrever_na_tela(String texto, Mat frame){
-        Imgproc.putText(frame, texto, new Point(frame.cols() / 5 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 0));
+        Imgproc.putText(frame, texto, new Point(frame.cols() / 5 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.2, new Scalar(255, 255, 0));
     }
 
     @Override
