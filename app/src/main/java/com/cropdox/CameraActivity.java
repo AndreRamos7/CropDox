@@ -74,8 +74,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private int touch_x;
     private int touch_y;
-    private final String TOUCH_GENIAL = "TOUCH GENIAL";
-    private final String GENIAL_LOG = "GENIAL";
+    private final String GENIAL_LOG = "GENIAL :: CameraActivity";
     private String currentPhotoPath;
     private String email_do_usuario_logado;
 
@@ -168,7 +167,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         painel_fundo = (ConstraintLayout) findViewById(R.id.camera_painel_fundo);
 
         Button btn_play = (Button) findViewById(R.id.camera_button);
-        Button next_btn = (Button) findViewById(R.id.next_button);
         camera_imageViewPhoto = (ImageView) findViewById(R.id.camera_imageView_photo);
         //camera_preview = (ImageView) findViewById(R.id.camera_preview);
         Button prev_button = (Button) findViewById(R.id.prev_button);
@@ -196,11 +194,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
         prev_button.animate().rotation(prev_button.getRotation() - 90).start();
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
-        next_btn.animate().rotation(next_btn.getRotation() - 90).start();
 
         prev_button.setOnClickListener(this);
         btn_play.setOnClickListener(this);
-        next_btn.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
 
     }
@@ -222,11 +218,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-        }else if(v.getId() == R.id.next_button){
-            iniciarCapturaQr(v);
-            Log.e(GENIAL_LOG, "NextButton!");
-            //Toast.makeText(this.getApplicationContext(), "NextButton!", Toast.LENGTH_LONG).show();
         }
     }
     @Override

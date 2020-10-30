@@ -38,7 +38,7 @@ import java.security.interfaces.RSAPublicKey;
 public class QrActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2{
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
-    private final static String QR_GENIAL = "QR_GENIAL";
+    private final String GENIAL_LOG = "GENIAL :: QrActivity";
     private FpsMeter mFpsMeter;
     private Socket mSocket;
     private TextView text_view_descricao;
@@ -67,7 +67,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
             String email = extras.getString("email_do_usuario_logado");
             email_do_usuario_logado = email;
         }
-        Log.v(QR_GENIAL, "User in QrActivity: " + email_do_usuario_logado);
+        Log.v(GENIAL_LOG, "User in QrActivity: " + email_do_usuario_logado);
 
         qr_ja_reconhecido = false;
 
@@ -124,7 +124,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
          QRCodeDetector qrCodeDetector = new QRCodeDetector();
          String textoQr = qrCodeDetector.detectAndDecode(frame);
          //Toast.makeText(this.getApplicationContext(),textoQr,Toast.LENGTH_LONG).show();
-         Log.v(QR_GENIAL, "textoQr: " + textoQr);
+         Log.v(GENIAL_LOG, "textoQr: " + textoQr);
 
          try {
              if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
@@ -134,7 +134,7 @@ public class QrActivity extends AppCompatActivity implements CameraBridgeViewBas
                  qr_ja_reconhecido = false;
              }
          } catch (JSONException e) {
-             Log.e(QR_GENIAL, "JSONException " + e.getMessage());
+             Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
          }
          return frame;
     }

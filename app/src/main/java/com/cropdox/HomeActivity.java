@@ -30,13 +30,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
-    public static final String EXTRA_MESSAGE = "com.cropdox.MESSAGE";
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private String email_do_usuario_logado;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private AdView mAdView;
-    private final String GENIAL_LOG = "GENIAL";
+    private final String GENIAL_LOG = "GENIAL :: HomeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

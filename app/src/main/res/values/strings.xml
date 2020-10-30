@@ -30,4 +30,5 @@
     <!-- app:adUnitId="ca-app-pub-5217265578005284/4453756926" <== id de bloco banner  para produção-->
     <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
     <string name="str_google_admob_id_bloco">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="str_contentDescription_loading">LOADING</string>
 </resources>

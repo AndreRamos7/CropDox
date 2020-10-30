@@ -58,15 +58,6 @@
                 android:focusable="true"
                 android:selectAllOnFocus="true" />
 
-            <Button
-                android:id="@+id/next_button"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@android:drawable/ic_media_ff"
-                android:clickable="true"
-                android:focusable="true"
-                android:selectAllOnFocus="true" />
-
             <ImageView
                 android:id="@+id/camera_imageView_photo"
                 android:layout_width="79dp"

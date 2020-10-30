@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,8 +29,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.io.File;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final String TAG = "LogInActivity ==";
-    private static final String GENIAL_LOG = "GENIAL";
+    private static final String GENIAL_LOG = "GENIAL :: LogInActivity ";
     private GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -58,6 +59,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         String diretorio_cropDox =  get_endereco_diretorio_cropDox();
         Log.v(GENIAL_LOG, "Diretório DropDox: " + diretorio_cropDox);
         //Toast.makeText(this, "Diretório DropDox: " + diretorio_cropDox, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -78,11 +80,11 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                Log.d(GENIAL_LOG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
+                Log.w(GENIAL_LOG, "Google sign in failed", e);
                 // ...
             }
         }
@@ -96,12 +98,12 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.d(GENIAL_LOG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.w(GENIAL_LOG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LogInActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
