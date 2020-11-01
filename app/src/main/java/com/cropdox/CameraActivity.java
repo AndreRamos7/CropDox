@@ -200,17 +200,47 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         btn_play.setOnTouchListener(this);
 
     }
+
+    public Mat rotacionar_imagem(Mat imagem, double angle){
+        double h = foto_capturada.size().height;
+        double w = foto_capturada.size().width;
+        Point center = new Point(w/2, h/2);
+        Mat m = Imgproc.getRotationMatrix2D(center, -angle, 1.0);
+        Mat dest = new Mat();
+        double cos = Math.abs(m.get(0, 0)[0]);
+        double sin = Math.abs(m.get(0, 1)[0]);
+
+        int nW = (int) ((h * sin) + (w * cos));
+        int nH = (int) ((h * cos) + (w * sin));
+        Size nSize = new Size(nW, nH);
+
+        double[] value_0_2 = m.get(0,2);
+        double[] value_1_2 = m.get(1,2);
+
+        value_0_2[0] += (nW / 2) - center.x;
+        value_1_2[0] +=  (nH / 2) - center.y;
+
+        m.put(0,2, value_0_2);
+        m.put(1,2, value_1_2);
+
+        Imgproc.warpAffine(imagem, dest, m, nSize);
+
+        return dest;
+
+    }
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.prev_button){
             finish();
         }else if(v.getId() == R.id.camera_button){
             camera_button_clicado = true;
+            Mat img_rotacionada = rotacionar_imagem(foto_capturada, 90);
             if(foto_capturada.width() == 0)
                 return;
 
-            Bitmap bitmap_foto_capturada = Bitmap.createBitmap(foto_capturada.cols(), foto_capturada.rows(), Bitmap.Config.RGB_565);
-            Utils.matToBitmap(foto_capturada, bitmap_foto_capturada);
+            Bitmap bitmap_foto_capturada = Bitmap.createBitmap(img_rotacionada.cols(), img_rotacionada.rows(), Bitmap.Config.RGB_565);
+            Utils.matToBitmap(img_rotacionada, bitmap_foto_capturada);
+            img_rotacionada.release();
             foto_capturada.release();
             camera_imageViewPhoto.setImageBitmap(bitmap_foto_capturada);
             try {
