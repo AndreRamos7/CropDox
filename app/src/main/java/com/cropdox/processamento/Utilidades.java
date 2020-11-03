@@ -23,7 +23,7 @@ public class Utilidades {
     /*
     * mostra as linhas de acordo com os limites detectados
     * */
-    public static Mat transformacao_de_hough(Mat edges){
+    public static Mat transformacao_de_hough(Mat src, Mat edges){
 
         Mat edgeColor = new Mat();
         Imgproc.cvtColor(edges, edgeColor, Imgproc.COLOR_GRAY2BGR);
@@ -45,7 +45,7 @@ public class Utilidades {
             pt1.y = Math.round(y0 + 1000*(a));
             pt2.x = Math.round(x0 - 1000*(-b));
             pt2.y = Math.round(y0 - 1000 *(a));
-            Imgproc.line(edgeColor, pt1, pt2, new Scalar(0, 0, 255), 3);
+            Imgproc.line(src, pt1, pt2, new Scalar(0, 0, 255), 3);
         }
 
         return edgeColor;
