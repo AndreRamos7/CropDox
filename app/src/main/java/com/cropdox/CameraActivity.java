@@ -470,7 +470,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Imgproc.GaussianBlur(frame_dilate, frame_blur, sz, 0);
         foto_capturada = frame;
         //Computando interseções e pontuando quadriláteros
-        Mat edgeColor = Utilidades.transformacao_de_hough(frame, edges);
+        Mat frame_cp = Utilidades.transformacao_de_hough(frame, edges);
 
         //falta pontuar a intersecção das retas
 
@@ -479,7 +479,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         frame_dilate.release();
         //frame_blur.release();
 
-        return frame;
+        return frame_cp;
     }
 
     /*
