@@ -38,7 +38,7 @@ import java.security.interfaces.RSAPublicKey;
 public class QrActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2{
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
-    private final String GENIAL_LOG = "GENIAL :: QrActivity";
+    private final String GENIAL_LOG = "QrActivity";
     private FpsMeter mFpsMeter;
     private Socket mSocket;
     private TextView text_view_descricao;

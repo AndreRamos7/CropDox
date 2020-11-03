@@ -29,7 +29,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.io.File;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final String GENIAL_LOG = "GENIAL :: LogInActivity ";
+    private static final String GENIAL_LOG = "LogInActivity ";
     private GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;

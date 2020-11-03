@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private AdView mAdView;
-    private final String GENIAL_LOG = "GENIAL :: HomeActivity";
+    private final String GENIAL_LOG = "HomeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -34,6 +34,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -47,6 +48,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -74,7 +77,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private int touch_x;
     private int touch_y;
-    private final String GENIAL_LOG = "GENIAL :: CameraActivity";
+    private final String GENIAL_LOG = "CameraActivity";
     private String currentPhotoPath;
     private String email_do_usuario_logado;
 
@@ -226,8 +229,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Imgproc.warpAffine(imagem, dest, m, nSize);
 
         return dest;
-
     }
+
+
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.prev_button){
@@ -426,7 +430,29 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
+        Mat dest =  new Mat();
+
+        Size sz = new Size(15, 15);
+
+        Mat frame_gray =  new Mat();
+        Mat frame_blur =  new Mat();
+        Mat frame_dilate =  new Mat();
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(13,13));
+
+        int h_frame = (int) frame.size().height;
+        int w_frame = (int) frame.size().width;
+        int a_frame_crop = (h_frame * w_frame);
+
+        Imgproc.cvtColor(frame, frame_gray, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.Canny(frame_gray, dest, 60, 60*3);
+        Imgproc.dilate(dest, frame_dilate, kernel);
+        Imgproc.blur(frame_dilate, frame_blur, sz, new Point(5,5));
+
+        frame_gray.release();
+
+
         foto_capturada = frame;
+
         if(camera_button_clicado && modo_QR){
             //camera_controles.setVisibility(View.INVISIBLE);
             QRCodeDetector qrCodeDetector = new QRCodeDetector();
@@ -444,13 +470,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             } catch (JSONException e) {
                 Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
             }
-            return frame;
-
-            //
-            //camera_button_clicado = false;
         }
 
-        return frame;
+        return frame_blur;
     }
 
     /*
