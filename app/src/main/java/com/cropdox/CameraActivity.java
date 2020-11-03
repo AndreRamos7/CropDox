@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
+import com.cropdox.processamento.Utilidades;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
 
@@ -430,25 +431,31 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-        Mat dest =  new Mat();
+        Mat edges =  new Mat();
 
         Size sz = new Size(15, 15);
 
         Mat frame_gray =  new Mat();
         Mat frame_blur =  new Mat();
         Mat frame_dilate =  new Mat();
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(13,13));
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(9,9));
 
         int h_frame = (int) frame.size().height;
         int w_frame = (int) frame.size().width;
         int a_frame_crop = (h_frame * w_frame);
-
+        //Detecção de borda
         Imgproc.cvtColor(frame, frame_gray, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.Canny(frame_gray, dest, 60, 60*3);
-        Imgproc.dilate(dest, frame_dilate, kernel);
-        Imgproc.blur(frame_dilate, frame_blur, sz, new Point(5,5));
+        Imgproc.Canny(frame_gray, edges, 60, 60*3);
+        Imgproc.dilate(edges, frame_dilate, kernel);
+        Imgproc.GaussianBlur(frame_dilate, frame_blur, sz, 0);
+
+        //Computando interseções e pontuando quadriláteros
+        Mat edgeColor = Utilidades.transformacao_de_hough(edges);
 
         frame_gray.release();
+        edges.release();
+        frame_dilate.release();
+        //frame_blur.release();
 
 
         foto_capturada = frame;
@@ -472,7 +479,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             }
         }
 
-        return frame_blur;
+        return edgeColor;
     }
 
     /*
