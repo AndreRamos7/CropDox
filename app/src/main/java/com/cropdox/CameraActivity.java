@@ -431,10 +431,30 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
+
+
+        if(camera_button_clicado && modo_QR){
+            //camera_controles.setVisibility(View.INVISIBLE);
+            QRCodeDetector qrCodeDetector = new QRCodeDetector();
+            String textoQr = qrCodeDetector.detectAndDecode(frame);
+            Log.v(GENIAL_LOG, "textoQr: " + textoQr);
+            escrever_na_tela("EM MODO QR", frame);
+
+            try {
+                if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
+                    enviar_id_browser_ao_servidor(textoQr);
+                    qr_ja_reconhecido = true;
+                }else{
+                    qr_ja_reconhecido = false;
+                }
+            } catch (JSONException e) {
+                Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
+            }
+        }
+
+
         Mat edges =  new Mat();
-
         Size sz = new Size(15, 15);
-
         Mat frame_gray =  new Mat();
         Mat frame_blur =  new Mat();
         Mat frame_dilate =  new Mat();
@@ -448,7 +468,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         Imgproc.Canny(frame_gray, edges, 60, 60*3);
         Imgproc.dilate(edges, frame_dilate, kernel);
         Imgproc.GaussianBlur(frame_dilate, frame_blur, sz, 0);
-
+        foto_capturada = frame;
         //Computando interseções e pontuando quadriláteros
         Mat edgeColor = Utilidades.transformacao_de_hough(frame, edges);
 
@@ -458,28 +478,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         edges.release();
         frame_dilate.release();
         //frame_blur.release();
-
-
-        foto_capturada = frame;
-
-        if(camera_button_clicado && modo_QR){
-            //camera_controles.setVisibility(View.INVISIBLE);
-            QRCodeDetector qrCodeDetector = new QRCodeDetector();
-            String textoQr = qrCodeDetector.detectAndDecode(frame);
-            Log.v(GENIAL_LOG, "textoQr: " + textoQr);
-            escrever_na_tela("EM MODO QR", frame);
-            try {
-
-                if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
-                    enviar_id_browser_ao_servidor(textoQr);
-                    qr_ja_reconhecido = true;
-                }else{
-                    qr_ja_reconhecido = false;
-                }
-            } catch (JSONException e) {
-                Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
-            }
-        }
 
         return frame;
     }
