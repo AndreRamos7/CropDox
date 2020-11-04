@@ -453,32 +453,14 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         }
 
 
-        Mat edges =  new Mat();
-        Size sz = new Size(15, 15);
-        Mat frame_gray =  new Mat();
-        Mat frame_blur =  new Mat();
-        Mat frame_dilate =  new Mat();
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE,new Size(9,9));
-
         int h_frame = (int) frame.size().height;
         int w_frame = (int) frame.size().width;
         int a_frame_crop = (h_frame * w_frame);
         //Detecção de borda
-        Imgproc.cvtColor(frame, frame_gray, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.Canny(frame_gray, edges, 60, 60*3);
-        Imgproc.dilate(edges, frame_dilate, kernel);
-        Imgproc.GaussianBlur(frame_dilate, frame_blur, sz, 0);
-        foto_capturada = frame;
-        //Computando interseções e pontuando quadriláteros
-        Mat frame_cp = Utilidades.transformacao_de_hough(frame, edges);
+        Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2GRAY);
 
-        //falta pontuar a intersecção das retas
-
-        frame_gray.release();
-        edges.release();
-        frame_dilate.release();
-        //frame_blur.release();
-
+        Mat frame_cp = Utilidades.escanear(frame);
+        foto_capturada = frame_cp;
         return frame_cp;
     }
 

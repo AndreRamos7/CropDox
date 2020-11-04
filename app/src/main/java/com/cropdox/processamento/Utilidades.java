@@ -19,6 +19,18 @@ public class Utilidades {
     public Utilidades() {
 
     }
+    public static Mat escanear(Mat src){
+
+        Mat frame =  src.clone();
+        Mat dest =  new Mat();
+        Mat frame_blur =  new Mat();
+        //Imgproc.medianBlur(frame, frame_blur, 5);
+        Imgproc.adaptiveThreshold(frame, dest,255,Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY,11,2.0);
+
+
+        return dest;
+
+    }
     /*
     * mostra as linhas de acordo com os limites detectados
     * */
