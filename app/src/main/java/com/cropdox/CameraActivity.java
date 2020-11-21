@@ -431,16 +431,15 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-
-
+        foto_capturada = frame;
         if(camera_button_clicado && modo_QR){
             //camera_controles.setVisibility(View.INVISIBLE);
             QRCodeDetector qrCodeDetector = new QRCodeDetector();
             String textoQr = qrCodeDetector.detectAndDecode(frame);
             Log.v(GENIAL_LOG, "textoQr: " + textoQr);
             escrever_na_tela("EM MODO QR", frame);
-
             try {
+
                 if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
                     enviar_id_browser_ao_servidor(textoQr);
                     qr_ja_reconhecido = true;
@@ -450,18 +449,10 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             } catch (JSONException e) {
                 Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
             }
+
         }
 
-
-        int h_frame = (int) frame.size().height;
-        int w_frame = (int) frame.size().width;
-        int a_frame_crop = (h_frame * w_frame);
-        //Detecção de borda
-        Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2GRAY);
-
-        Mat frame_cp = Utilidades.escanear(frame);
-        foto_capturada = frame_cp;
-        return frame_cp;
+        return frame;
     }
 
     /*

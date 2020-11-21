@@ -2,6 +2,8 @@ package com.cropdox.processamento;
 
 import android.util.Log;
 
+import com.cropdox.model.FileInfo;
+
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -13,8 +15,17 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+
 public class Utilidades {
     private static final String TAG_GENIAL = "matriz";
+    private final String GENIAL_LOG = "Utilidades";
 
     public Utilidades() {
 
@@ -61,4 +72,6 @@ public class Utilidades {
 
         return frame_cp;
     }
+
+
 }

@@ -182,7 +182,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             // If you require it to make the entire directory path including parents,
             // use directory.mkdirs(); here instead.
         }
-        Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
         return meu_diretorio.toString();
     }
 
