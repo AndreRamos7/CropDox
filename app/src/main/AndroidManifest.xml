@@ -34,7 +34,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ReceptFileActivity">
+        <activity android:name=".ReceptFileActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -86,17 +87,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
         </activity>
-        <activity
-            android:name=".CamActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:parentActivityName=".HomeActivity"
-            android:screenOrientation="landscape">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
-        </activity> <!-- =================== DEMAIS CONFIGURAÇÕES ====================== -->
+        <!-- =================== DEMAIS CONFIGURAÇÕES ====================== -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.cropdox.fileprovider"

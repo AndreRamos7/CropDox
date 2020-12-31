@@ -174,9 +174,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
     /** Called when the user taps the Send button */
     public void iniciarCapturaOpenCV(View view) {
-        Intent intent = new Intent(this, CamActivity.class);
+        /*Intent intent = new Intent(this, CamActivity.class);
         //intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     /** Called when the user taps the Send button */
