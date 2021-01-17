@@ -181,6 +181,7 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
             Log.v(GENIAL_LOG, currentPhotoPath);
             // Update UI to reflect image being shared
             imageView.setImageURI(imageUri);
+
             //this.enviarImagem();
         }
     }

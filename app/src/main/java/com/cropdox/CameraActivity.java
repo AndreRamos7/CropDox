@@ -251,6 +251,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             try {
                 saveImage(bitmap_foto_capturada);
             } catch (IOException e) {
+                Log.e(GENIAL_LOG, e.getMessage());
+                Toast.makeText(this, "ERRO AO SALVAR IMAGEM", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
@@ -300,12 +302,19 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     private String get_endereco_diretorio_cropDox() {
         String root = Environment.getExternalStorageDirectory().toString();
-        File meu_diretorio = new File(root + "/CropDox");
-
+        File meu_diretorio = new File(root + File.separator +  "CropDox");
+        //Toast.makeText(this, "root:: " + root, Toast.LENGTH_SHORT).show();
         if (!meu_diretorio.exists()){
-            meu_diretorio.mkdir();
-            // If you require it to make the entire directory path including parents,
-            // use directory.mkdirs(); here instead.
+            if(meu_diretorio.mkdir()) {
+                // If you require it to make the entire directory path including parents,
+                // use directory.mkdirs(); here instead.
+                Toast.makeText(this, "meu_diretorio:: " + meu_diretorio, Toast.LENGTH_SHORT).show();
+                Log.v(GENIAL_LOG, "Diretório criado! " + meu_diretorio);
+            }else{
+                Log.v(GENIAL_LOG, "Diretório  NÃOOOO criado! canWrite" + meu_diretorio.canWrite());
+            }
+        }else{
+            Log.v(GENIAL_LOG, "Diretório já existe! " + meu_diretorio);
         }
         Log.v(GENIAL_LOG, "Endereço obtido com sucesso!");
         //Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
@@ -353,13 +362,14 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             Log.v(GENIAL_LOG, "Salvo nos arquivos!");
 
-            //Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
             this.enviarImagem();
             out.flush();
             out.close();
             modo_QR = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(this.getApplicationContext(), "NÂO Salvo nos arquivos!" + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(GENIAL_LOG, e.getMessage());
         }
     }
 
@@ -367,7 +377,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private File createImageFile() throws IOException {
          // Create an image file name
         String root = Environment.getExternalStorageDirectory().toString();
-        File diretorio_mobile = new File(root + "/CropDox");
+        File diretorio_mobile = new File(root + File.separator + "CropDox");
         //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = null; //
         try {
@@ -432,6 +442,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
         foto_capturada = frame;
+        //Log.v(GENIAL_LOG, "textoQr: nada" );
         if(camera_button_clicado && modo_QR){
             //camera_controles.setVisibility(View.INVISIBLE);
             QRCodeDetector qrCodeDetector = new QRCodeDetector();
