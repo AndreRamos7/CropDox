@@ -11,14 +11,13 @@
         android:id="@+id/textResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:text="@string/transfer_result"
         android:textColor="#330606"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_check"
-        app:layout_constraintVertical_bias="0.201" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView_check" />
 
     <ImageView
         android:id="@+id/imageView_logo"
@@ -57,8 +56,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textResult"
-        app:layout_constraintVertical_bias="0.98"
         tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
+
+    <Button
+        android:id="@+id/button_voltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/botao_costumizado_voltar"
+        android:text="@string/button_voltar"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/adView_transfer_activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textResult" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

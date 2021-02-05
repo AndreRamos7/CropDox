@@ -33,4 +33,5 @@
     <string name="str_contentDescription_loading">LOADING</string>
     <string name="str_content_img_recebida">Imagem recebida</string>
     <string name="btn_str_enviar_ao_browser">Enviar ao browser</string>
+    <string name="button_voltar">Voltar</string>
 </resources>

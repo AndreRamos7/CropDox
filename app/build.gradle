@@ -8,8 +8,8 @@ android {
         applicationId "com.cropdox"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 14
-        versionName "13.0.1"
+        versionCode 16
+        versionName "13.0.6"
 		multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

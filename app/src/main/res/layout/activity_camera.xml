@@ -64,5 +64,6 @@
                 android:layout_height="100dp"
                 android:contentDescription="@string/app_name" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

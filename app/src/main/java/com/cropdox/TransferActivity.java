@@ -19,17 +19,20 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 
-public class TransferActivity extends AppCompatActivity {
+public class TransferActivity extends AppCompatActivity implements View.OnClickListener {
     private AdView mAdView;
         @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_transfer);
             TextView textResultado = (TextView) findViewById(R.id.textResult);
+            Button btn_voltar = (Button) findViewById(R.id.button_voltar);
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
                 String value = extras.getString("key");
             }
+            btn_voltar.setOnClickListener(this);
+
             MobileAds.initialize(this, new OnInitializationCompleteListener() {
                 @Override
                 public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -41,4 +44,11 @@ public class TransferActivity extends AppCompatActivity {
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.button_voltar){
+            finish();
+        }
+    }
 }

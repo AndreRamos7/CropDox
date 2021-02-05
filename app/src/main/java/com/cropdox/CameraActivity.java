@@ -75,6 +75,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
     private ConstraintLayout painel_fundo;
+    private Button prev_button;
+    private Button btn_play;
     private int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private int touch_x;
     private int touch_y;
@@ -100,6 +102,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     };
     private LinearLayout camera_controles;
 
+
     {
         try {
             //mSocket = IO.socket("http://192.168.0.107/");
@@ -118,7 +121,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     }
 
     private void addMessage(String mensagem) {
-        Log.v(GENIAL_LOG, "Servidor Node diz: " + mensagem);
+        //Log.v(GENIAL_LOG, "Servidor Node diz: " + mensagem);
     }
 
     @Override
@@ -170,10 +173,10 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
         painel_fundo = (ConstraintLayout) findViewById(R.id.camera_painel_fundo);
 
-        Button btn_play = (Button) findViewById(R.id.camera_button);
+        btn_play = (Button) findViewById(R.id.camera_button);
         camera_imageViewPhoto = (ImageView) findViewById(R.id.camera_imageView_photo);
         //camera_preview = (ImageView) findViewById(R.id.camera_preview);
-        Button prev_button = (Button) findViewById(R.id.prev_button);
+        prev_button = (Button) findViewById(R.id.prev_button);
 
         cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.camera_opencv);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -195,13 +198,14 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             }
         };
         get_endereco_diretorio_cropDox();
-
+        btn_play.setVisibility(View.VISIBLE);
         prev_button.animate().rotation(prev_button.getRotation() - 90).start();
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
 
         prev_button.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
+        prev_button.setOnTouchListener(this);
 
     }
 
@@ -238,18 +242,21 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         if(v.getId() == R.id.prev_button){
             finish();
         }else if(v.getId() == R.id.camera_button){
-            camera_button_clicado = true;
             Mat img_rotacionada = rotacionar_imagem(foto_capturada, 90);
+
             if(foto_capturada.width() == 0)
                 return;
 
             Bitmap bitmap_foto_capturada = Bitmap.createBitmap(img_rotacionada.cols(), img_rotacionada.rows(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(img_rotacionada, bitmap_foto_capturada);
-            img_rotacionada.release();
-            foto_capturada.release();
+
             camera_imageViewPhoto.setImageBitmap(bitmap_foto_capturada);
+
             try {
                 saveImage(bitmap_foto_capturada);
+                camera_button_clicado = true;
+                img_rotacionada.release();
+                foto_capturada.release();
             } catch (IOException e) {
                 Log.e(GENIAL_LOG, e.getMessage());
                 Toast.makeText(this, "ERRO AO SALVAR IMAGEM", Toast.LENGTH_SHORT).show();
@@ -259,11 +266,20 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     }
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_UP) {
-            view.setBackgroundResource(android.R.drawable.ic_menu_camera);
-            //clicado = false;
-        } else if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            view.setBackgroundResource(android.R.drawable.ic_menu_add);
+        if(view.getId() == R.id.camera_button) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_camera);
+                //clicado = false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_add);
+            }
+        }else if(view.getId() == R.id.prev_button) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+                //clicado = false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundResource(android.R.drawable.ic_media_previous);
+            }
         }
         return false;
     }
@@ -340,14 +356,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         return super.onTouchEvent(event);
     }
 
-    public void iniciarCapturaQr(View view) {
-        Intent intent = new Intent(this, QrActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        intent.putExtra("email_do_usuario_logado", email_do_usuario_logado);
-        startActivity(intent);
-    }
-
     private void saveImage(Bitmap finalBitmap) throws IOException {
         File file = createImageFile();
         //if (file.exists()) file.delete ();
@@ -360,9 +368,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            Log.v(GENIAL_LOG, "Salvo nos arquivos!");
+            //Log.v(GENIAL_LOG, "Salvo nos arquivos!");
 
-            Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this.getApplicationContext(), "Salvo nos arquivos!", Toast.LENGTH_LONG).show();
             this.enviarImagem();
             out.flush();
             out.close();
@@ -410,6 +418,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         super.onPause();
         modo_QR = false;
         camera_button_clicado = false;
+        btn_play.setVisibility(View.VISIBLE);
         if(cameraBridgeViewBase != null){
             cameraBridgeViewBase.disableView();
         }
@@ -418,6 +427,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     protected void onResume(){
         super.onResume();
+        btn_play.setVisibility(View.VISIBLE);
+        camera_imageViewPhoto.setImageBitmap(null);
         if(!OpenCVLoader.initDebug()){
             Toast.makeText(getApplicationContext(), "There's a problem, yo!", Toast.LENGTH_SHORT);
             //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
@@ -438,19 +449,32 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         return resized;
     }
 
+    public void esconder_botoes(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(btn_play.getVisibility() == View.VISIBLE) {
+                    btn_play.setVisibility(View.INVISIBLE);
+                    //prev_button.setVisibility(View.VISIBLE);
+                }else{
+
+                }
+            }
+        });
+    }
+
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
         foto_capturada = frame;
         //Log.v(GENIAL_LOG, "textoQr: nada" );
         if(camera_button_clicado && modo_QR){
-            //camera_controles.setVisibility(View.INVISIBLE);
+            this.esconder_botoes();
             QRCodeDetector qrCodeDetector = new QRCodeDetector();
             String textoQr = qrCodeDetector.detectAndDecode(frame);
-            Log.v(GENIAL_LOG, "textoQr: " + textoQr);
-            escrever_na_tela("EM MODO QR", frame);
+            //Log.v(GENIAL_LOG, "textoQr: " + textoQr);
+            escrever_na_tela("Escaneando QR CODE...", frame);
             try {
-
                 if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
                     enviar_id_browser_ao_servidor(textoQr);
                     qr_ja_reconhecido = true;
@@ -460,9 +484,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
             } catch (JSONException e) {
                 Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
             }
-
         }
-
         return frame;
     }
 
@@ -497,12 +519,28 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         startActivity(intent);
     }
 
+    static int cont = 0;
     /**
      * Mostra o texto na tela no frame especificado
      *
      */
     public void escrever_na_tela(String texto, Mat frame){
-        Imgproc.putText(frame, texto, new Point(frame.cols() / 5 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.2, new Scalar(255, 255, 0));
+        Point pt1 = new Point();
+        Point pt2 = new Point();
+
+        if(cont >= frame.cols()) {
+            cont = 0;
+        }else {
+            cont += 100;
+        }
+        pt1.x = cont;
+        pt1.y = 0;
+        pt2.x = cont;
+        pt2.y = frame.cols();
+
+        Imgproc.line(frame, pt1, pt2, new Scalar(255, 255, 0), 7);
+        //Imgproc.rectangle(frame,);
+        Imgproc.putText(frame, texto, new Point(frame.cols() / 10 , frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.2, new Scalar(255, 255, 0));
     }
 
     @Override
