@@ -19,11 +19,7 @@ import android.widget.Toast;
 import com.cropdox.model.FileInfo;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,14 +37,12 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.QRCodeDetector;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -59,11 +53,12 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class ReceptFileActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class ReceptFileActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2,
+        View.OnClickListener {
     private ImageView imageView;
     private Button btn_enviar;
     private String currentPhotoPath;
-    private final String GENIAL_LOG = "ReceptFileActivity";///item/0fdb4d76-3ae0-4a84-b9b0-45aace4fabb5
+    private final String GENIAL_LOG = "ReceptFileActivity";
     private FileService fileService;
     private AdView mAdView;
     private FirebaseAuth mAuth;
@@ -71,9 +66,12 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
 
+    private boolean modo_QR;
+    private boolean botoa_enviado_clicado;
 
     private Socket mSocket;
     private boolean qr_ja_reconhecido;
+
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -86,6 +84,8 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         }
     };
     private LinearLayout camera_controles;
+    private Bitmap bitmap;
+    private Button botao_enviar;
 
     {
         try {
@@ -113,11 +113,16 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recept_file);
         imageView = (ImageView) findViewById(R.id.imageView_img_recebida);
+        botao_enviar = (Button) findViewById(R.id.botao_enviar);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         email_do_usuario_logado = user.getEmail();
+        Log.v(GENIAL_LOG, email_do_usuario_logado);
+
+        botoa_enviado_clicado = false;
+        modo_QR = false;
 
         // Get intent, action and MIME type
         Intent intent = getIntent();
@@ -125,12 +130,13 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-             if (type.startsWith("image/")) {
+             if (type.startsWith("image/") ) {
                 handleSendImage(intent); // Handle single image being sent
             }
         } else {
             // Handle other intents, such as being started from the home screen
         }
+        fileService = APIUtils.getFileService();
 
         cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.camera_opencv2);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -153,36 +159,62 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         };
 
         imageView.animate().rotation(imageView.getRotation() - 90).start();
+        botao_enviar.animate().rotation(botao_enviar.getRotation() - 90).start();
+        botao_enviar.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.botao_enviar){
+            modo_QR = true;
+            botoa_enviado_clicado = true;
+            enviarImagem();
+        }
     }
 
     void handleSendImage(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        //MediaController mediaController = new MediaController(this.getApplication());
+        //String fileName = MediaController.fixFileName(MediaController.getFileName(imageUri));
+
+        //File photoUpload = new File(imageUri.getPath());
         if (imageUri != null) {
-            currentPhotoPath = imageUri.getPath();
+            //currentPhotoPath = photoUpload.getPath();
 
-            // Create an image file name
-            String root = Environment.getExternalStorageDirectory().toString();
-            File diretorio_mobile = new File(root + "/CropDox");
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = timeStamp;
+            InputStream stream = null;
+            try {
+                stream = this.getContentResolver().openInputStream(imageUri);
+            }
+            catch (FileNotFoundException fileEx) {
+                Log.e(GENIAL_LOG, fileEx.getMessage());
+            }
+
+            if (stream != null) {
+                bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(stream);
+                }
+                finally {
+                    try {
+                        stream.close();
+                        stream = null;
+                    }
+                    catch (IOException e) {
+                    }
+                }
+            }
 
 
-            //File storageDir = diretorio_mobile;
-            File dest = new File(
-                    diretorio_mobile,      /* directory */
-                    imageFileName +  /* prefix */
-                            ".jpg"        /* suffix */
-            );
+            try {
+                this.saveImage(bitmap);
 
-            File source = new File(currentPhotoPath);
+                // Update UI to reflect image being shared
+                imageView.setImageBitmap(bitmap);
 
-            //enviarImagem();
-
-            Log.v(GENIAL_LOG, currentPhotoPath);
-            // Update UI to reflect image being shared
-            imageView.setImageURI(imageUri);
-
-            //this.enviarImagem();
+                Log.v(GENIAL_LOG, currentPhotoPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     /*
@@ -195,9 +227,8 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                 File file = new File(currentPhotoPath);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                 MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
+                //Log.v(GENIAL_LOG, file.getName());
                 Call<FileInfo> call = fileService.upload(body);
-
                 call.enqueue(new Callback<FileInfo>() {
                     @Override
                     public void onResponse(Call<FileInfo> call, retrofit2.Response<FileInfo> response) {
@@ -205,7 +236,8 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                         //Toast.makeText(CameraActivity.this, "response.message(): " + response.message(), Toast.LENGTH_SHORT).show();
                         if(response.isSuccessful()){
                             Log.v(GENIAL_LOG,"Upload realizado com sucesso!!");
-                            //Toast.makeText(CameraActivity.this, "Upload realizado com sucesso!!", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(ReceptFileActivity.this, "Upload realizado com sucesso!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
@@ -238,32 +270,49 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame =  inputFrame.rgba();
-        QRCodeDetector qrCodeDetector = new QRCodeDetector();
-        String textoQr = qrCodeDetector.detectAndDecode(frame);
-        Log.v(GENIAL_LOG, "textoQr: " + textoQr);
-        escrever_na_tela("EM MODO QR", frame);
-        try {
-
-            if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
-                enviar_id_browser_ao_servidor(textoQr);
-                //enviarImagem();
-                qr_ja_reconhecido = true;
-            }else{
-                qr_ja_reconhecido = false;
+        //Log.v(GENIAL_LOG, "textoQr: nada" );
+        if(botoa_enviado_clicado && modo_QR){
+            QRCodeDetector qrCodeDetector = new QRCodeDetector();
+            String textoQr = qrCodeDetector.detectAndDecode(frame);
+            Log.v(GENIAL_LOG, "textoQr: " + textoQr);
+            escrever_na_tela("Escaneando QR CODE...", frame);
+            try {
+                if (!qr_ja_reconhecido && !textoQr.equalsIgnoreCase("")) {
+                    enviar_id_browser_ao_servidor(textoQr);
+                    qr_ja_reconhecido = true;
+                }else{
+                    qr_ja_reconhecido = false;
+                }
+            } catch (JSONException e) {
+                Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
             }
-        } catch (JSONException e) {
-            Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
         }
-
         return frame;
     }
 
+
+    static int cont = 0;
     /**
      * Mostra o texto na tela no frame especificado
      *
      */
     public void escrever_na_tela(String texto, Mat frame){
-        Imgproc.putText(frame, texto, new Point(frame.cols() / 5 * 2, frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.2, new Scalar(255, 255, 0));
+        Point pt1 = new Point();
+        Point pt2 = new Point();
+
+        if(cont >= frame.cols()) {
+            cont = 0;
+        }else {
+            cont += 100;
+        }
+        pt1.x = cont;
+        pt1.y = 0;
+        pt2.x = cont;
+        pt2.y = frame.cols();
+
+        Imgproc.line(frame, pt1, pt2, new Scalar(255, 255, 0), 7);
+        //Imgproc.rectangle(frame,);
+        Imgproc.putText(frame, texto, new Point(frame.cols() / 10 , frame.rows() * 0.1), Core.FONT_HERSHEY_SIMPLEX, 1.2, new Scalar(255, 255, 0));
     }
 
     /*
@@ -294,4 +343,50 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         intent.putExtra("key", qr_ja_reconhecido);
         startActivity(intent);
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String root = Environment.getExternalStorageDirectory().toString();
+        File diretorio_mobile = new File(root + File.separator + "CropDox");
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = null; //
+        try {
+            imageFileName = APIUtils.md5(email_do_usuario_logado);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        //File storageDir = diretorio_mobile;
+        File image = new File(
+                diretorio_mobile,      /* directory */
+                imageFileName +  /* prefix */
+                        ".jpg"        /* suffix */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private void saveImage(Bitmap finalBitmap) throws IOException {
+        File file = createImageFile();
+        //if (file.exists()) file.delete ();
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            options.inDither = false;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            //Bitmap source = BitmapFactory.decodeFile(file.getAbsolutePath(), options); Serve??
+
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            Toast.makeText(this.getApplicationContext(), "NÂO Salvo nos arquivos!" + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(GENIAL_LOG, e.getMessage());
+        }
+    }
+
+
 }

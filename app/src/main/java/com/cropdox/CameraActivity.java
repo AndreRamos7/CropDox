@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
@@ -443,11 +442,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public void onCameraViewStopped() {}
 
-    private Bitmap cortarBitmap(int startX, int startY, int width, int height, Bitmap bmp) {
-        Bitmap source = bmp;
-        Bitmap resized = Bitmap.createBitmap(source, startX, startY, width, height);
-        return resized;
-    }
+
 
     public void esconder_botoes(){
         runOnUiThread(new Runnable() {
