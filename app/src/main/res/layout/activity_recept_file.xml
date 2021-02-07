@@ -17,24 +17,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/close_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="56dp"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:clickable="true"
+            android:focusable="true"
+            android:selectAllOnFocus="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <ImageView
             android:id="@+id/imageView_img_recebida"
             android:layout_width="91dp"
             android:layout_height="144dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="36dp"
             android:contentDescription="@string/str_content_img_recebida"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/botao_enviar"
-            app:layout_constraintHorizontal_bias="0.488"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/close_button"
             app:srcCompat="@drawable/icone512" />
 
         <Button
             android:id="@+id/botao_enviar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="56dp"
-            android:layout_marginBottom="92dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="96dp"
             android:background="@drawable/botao_costumizado_iniciar"
             android:text="@string/str_button_enviar"
             app:layout_constraintBottom_toBottomOf="parent"

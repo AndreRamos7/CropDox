@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -54,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 public class ReceptFileActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2,
-        View.OnClickListener {
+        View.OnClickListener, View.OnTouchListener {
     private ImageView imageView;
     private Button btn_enviar;
     private String currentPhotoPath;
@@ -71,7 +72,7 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
 
     private Socket mSocket;
     private boolean qr_ja_reconhecido;
-
+/*
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -82,10 +83,11 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                 }
             });
         }
-    };
+    };*/
     private LinearLayout camera_controles;
     private Bitmap bitmap;
     private Button botao_enviar;
+    private Button close_button;
 
     {
         try {
@@ -100,7 +102,7 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
     }
 
     public ReceptFileActivity() {
-        mSocket.on("mensagem", onNewMessage);
+        //mSocket.on("mensagem", onNewMessage);
         mSocket.connect();
     }
 
@@ -114,6 +116,7 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         setContentView(R.layout.activity_recept_file);
         imageView = (ImageView) findViewById(R.id.imageView_img_recebida);
         botao_enviar = (Button) findViewById(R.id.botao_enviar);
+        close_button = (Button) findViewById(R.id.close_button);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -160,7 +163,10 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
 
         imageView.animate().rotation(imageView.getRotation() - 90).start();
         botao_enviar.animate().rotation(botao_enviar.getRotation() - 90).start();
+        close_button.animate().rotation(close_button.getRotation() - 90).start();
         botao_enviar.setOnClickListener(this);
+        close_button.setOnClickListener(this);
+        close_button.setOnTouchListener(this);
     }
 
     @Override
@@ -169,9 +175,23 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
             modo_QR = true;
             botoa_enviado_clicado = true;
             enviarImagem();
+        }else if(v.getId() == R.id.close_button){
+            finish();
         }
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        if(view.getId() == R.id.close_button) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+                //clicado = false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundResource(android.R.drawable.ic_media_previous);
+            }
+        }
+        return false;
+    }
     void handleSendImage(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         //MediaController mediaController = new MediaController(this.getApplication());
@@ -179,8 +199,6 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
 
         //File photoUpload = new File(imageUri.getPath());
         if (imageUri != null) {
-            //currentPhotoPath = photoUpload.getPath();
-
             InputStream stream = null;
             try {
                 stream = this.getContentResolver().openInputStream(imageUri);
@@ -203,8 +221,6 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                     }
                 }
             }
-
-
             try {
                 this.saveImage(bitmap);
 
@@ -243,23 +259,13 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                     @Override
                     public void onFailure(Call<FileInfo> call, Throwable t) {
                         Log.e(GENIAL_LOG, "Erro: " +  t.getMessage());
-                        //Toast.makeText(CameraActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ReceptFileActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(!OpenCVLoader.initDebug()){
-            Toast.makeText(getApplicationContext(), "There's a problem, yo!", Toast.LENGTH_SHORT);
-            //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
-        }else{
-            baseLoaderCallback.onManagerConnected(baseLoaderCallback.SUCCESS);
-        }
-    }
 
     @Override
     public void onCameraViewStarted(int width, int height) {}
@@ -385,6 +391,29 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         } catch (Exception e) {
             Toast.makeText(this.getApplicationContext(), "NÂO Salvo nos arquivos!" + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.e(GENIAL_LOG, e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        modo_QR = false;
+        botoa_enviado_clicado = false;
+        botao_enviar.setVisibility(View.VISIBLE);
+        if(cameraBridgeViewBase != null){
+            cameraBridgeViewBase.disableView();
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        botao_enviar.setVisibility(View.VISIBLE);
+        if(!OpenCVLoader.initDebug()){
+            Toast.makeText(getApplicationContext(), "There's a problem, yo!", Toast.LENGTH_SHORT);
+            //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
+        }else{
+            baseLoaderCallback.onManagerConnected(baseLoaderCallback.SUCCESS);
         }
     }
 

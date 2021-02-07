@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
-import com.cropdox.processamento.Utilidades;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
 
@@ -34,9 +33,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -47,9 +44,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.text.BreakIterator;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -88,7 +82,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     private Socket mSocket;
     private boolean qr_ja_reconhecido;
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+    /*private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
@@ -98,7 +92,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 }
             });
         }
-    };
+    };*/
     private LinearLayout camera_controles;
 
 
@@ -115,7 +109,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     }
 
     public CameraActivity() {
-        mSocket.on("mensagem", onNewMessage);
+        //mSocket.on("mensagem", onNewMessage);
         mSocket.connect();
     }
 
