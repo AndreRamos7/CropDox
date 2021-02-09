@@ -120,8 +120,9 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        email_do_usuario_logado = user.getEmail();
+
+
+
         Log.v(GENIAL_LOG, email_do_usuario_logado);
 
         botoa_enviado_clicado = false;
@@ -192,6 +193,27 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
         }
         return false;
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+    private void updateUI(FirebaseUser user) {
+        //hideProgressBar();
+        if (user != null) {
+            String email = user.getEmail();
+            email_do_usuario_logado = email;
+            Log.v( GENIAL_LOG, "User in LogInActivity: " + email);
+            //Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, LogInActivity.class);
+            intent.putExtra("mensagem", "Você precisa fazer login para poder usar.");
+            startActivity(intent);
+        }
+    }
+
     void handleSendImage(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         //MediaController mediaController = new MediaController(this.getApplication());
@@ -259,7 +281,7 @@ public class ReceptFileActivity extends AppCompatActivity implements CameraBridg
                     @Override
                     public void onFailure(Call<FileInfo> call, Throwable t) {
                         Log.e(GENIAL_LOG, "Erro: " +  t.getMessage());
-                        Toast.makeText(ReceptFileActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ReceptFileActivity.this, "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

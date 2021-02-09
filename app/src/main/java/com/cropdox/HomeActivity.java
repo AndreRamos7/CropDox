@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cropdox.utilitarios.Testes;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -29,7 +31,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private String email_do_usuario_logado;
     private FirebaseAuth mAuth;
@@ -74,6 +76,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         
         Button btn_iniciar = (Button) findViewById(R.id.btn_iniciar);
         Button btn_sair = (Button) findViewById(R.id.btn_sair);
+        Button botao_fechar = (Button) findViewById(R.id.botao_fechar);
         //Button btn_desconnect = (Button) findViewById(R.id.btn_desconnect);
         TextView textView_saudacoes = (TextView) findViewById(R.id.text_view_saudacoes);
 
@@ -96,8 +99,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
 
         btn_iniciar.setOnClickListener(this);
-        //btn_desconnect.setOnClickListener(this);
+        botao_fechar.setOnClickListener(this);
+        botao_fechar.setOnTouchListener(this);
         btn_sair.setOnClickListener(this);
+
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -121,8 +126,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             iniciarCaptura(v);
         }else if (i == R.id.btn_sair) {
             signOut();
+        }else if(i == R.id.botao_fechar){
+            finishAffinity();
         }
     }
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        if(view.getId() == R.id.botao_fechar) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+                //clicado = false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundResource(android.R.drawable.ic_media_previous);
+            }
+        }
+        return false;
+    }
+
     private void revokeAccess() {
         // Firebase sign out
         mAuth.signOut();

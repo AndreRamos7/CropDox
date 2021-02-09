@@ -5,7 +5,7 @@
     <string name="img_btn_play">play.png</string>
 
     <string name="str_btn_iniciar">Iniciar</string>
-    <string name="str_btn_sair">Sair</string>
+    <string name="str_btn_sair">Logout</string>
     <string name="str_btn_desconnect">Desconectar</string>
 
     <string name="str_txtvw_consentimento">Fazendo login com sua conta Google, você concorda com os termos de uso deste aplicativo.</string>

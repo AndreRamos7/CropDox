@@ -8,7 +8,9 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,7 +30,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.File;
 
-public class LogInActivity extends AppCompatActivity implements View.OnClickListener{
+public class LogInActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
     private static final String GENIAL_LOG = "LogInActivity ";
     private GoogleSignInClient mGoogleSignInClient;
     public static final int RC_SIGN_IN = 9001;
@@ -39,6 +41,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
+        Button botao_fechar_tela_login = (Button) findViewById(R.id.botao_fechar_tela_login);
+
+        Bundle extras = getIntent().getExtras();
+        String mensagem = "";
+        if (extras != null) {
+            mensagem = extras.getString("mensagem");
+        }
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -56,12 +65,37 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        String diretorio_cropDox =  get_endereco_diretorio_cropDox();
-        Log.v(GENIAL_LOG, "Diretório DropDox: " + diretorio_cropDox);
-        //Toast.makeText(this, "Diretório DropDox: " + diretorio_cropDox, Toast.LENGTH_SHORT).show();
-
+        //String diretorio_cropDox =  get_endereco_diretorio_cropDox();
+        //Log.v(GENIAL_LOG, "Diretório DropDox: " + diretorio_cropDox);
+        if(!mensagem.equals("")) {
+            Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show();
+        }
+        botao_fechar_tela_login.setOnClickListener(this);
+        botao_fechar_tela_login.setOnTouchListener(this);
     }
 
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.sign_in_button) {
+            signIn();
+        }else if(i == R.id.botao_fechar_tela_login){
+            finish();
+        }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        if(view.getId() == R.id.botao_fechar_tela_login) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                view.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+                //clicado = false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundResource(android.R.drawable.ic_media_previous);
+            }
+        }
+        return false;
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -137,24 +171,19 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             //Toast.makeText(this, "User in LogInActivity: " + email, Toast.LENGTH_SHORT).show();
             redirecionarParaHome(email);
         } else {
-            Toast.makeText(this, "User: null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sem usuário logado.", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void redirecionarParaHome(String email) {
         Intent intent = new Intent(this, HomeActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("email_do_usuario_logado", email);
         startActivity(intent);
 
     }
 
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.sign_in_button) {
-            signIn();
-        }
-    }
+
     private void signOut() {
         // Firebase sign out
         mAuth.signOut();
@@ -185,6 +214,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         //Toast.makeText(this.getApplicationContext(), "Endereço obtido com sucesso!", Toast.LENGTH_LONG).show();
         return meu_diretorio.toString();
     }
+
 
 
 }
