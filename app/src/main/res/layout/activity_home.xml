@@ -90,17 +90,17 @@
     <!-- app:adUnitId="ca-app-pub-3940256099942544/6300978111" <== id de bloco  para teste-->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView_home_activity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="340dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:adSize="BANNER"
         app:adUnitId="@string/str_google_admob_id_bloco"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_saudacoes"
-        app:layout_constraintVertical_bias="0.935"
+        app:layout_constraintVertical_bias="0.984"
         tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
 </androidx.constraintlayout.widget.ConstraintLayout>

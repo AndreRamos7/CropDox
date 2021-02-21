@@ -16,11 +16,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cropdox.model.FileInfo;
+import com.cropdox.objetos.Ponto;
+import com.cropdox.objetos.Quadrilatero;
 import com.cropdox.remote.APIUtils;
 import com.cropdox.remote.FileService;
 
@@ -60,13 +63,14 @@ Esta Classe que está valendo para o primeiro lançamento no pacote com.cropdox
  */
 public class CameraActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2,
         View.OnClickListener, View.OnTouchListener {
-    private FileService fileService;
 
+    private FileService fileService;
     private CameraBridgeViewBase cameraBridgeViewBase;
     private BaseLoaderCallback baseLoaderCallback;
     private Mat foto_capturada = null;
     private ImageView camera_imageViewPhoto;
     private ImageView camera_preview;
+    private Quadrilatero quadrilatero;
     private ConstraintLayout painel_fundo;
     private Button prev_button;
     private Button btn_play;
@@ -94,6 +98,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         }
     };*/
     private LinearLayout camera_controles;
+    private FrameLayout tela_geral;
 
 
     {
@@ -111,6 +116,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     public CameraActivity() {
         //mSocket.on("mensagem", onNewMessage);
         mSocket.connect();
+        quadrilatero = new Quadrilatero(null);
     }
 
     private void addMessage(String mensagem) {
@@ -122,6 +128,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         camera_controles = (LinearLayout) findViewById(R.id.camera_controles);
+        tela_geral = (FrameLayout) findViewById(R.id.tela_geral);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email_do_usuario_logado = extras.getString("email_do_usuario_logado");
@@ -195,6 +203,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         prev_button.animate().rotation(prev_button.getRotation() - 90).start();
         btn_play.animate().rotation(btn_play.getRotation() - 90).start();
 
+        tela_geral.setOnTouchListener(this);
         prev_button.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_play.setOnTouchListener(this);
@@ -274,6 +283,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 view.setBackgroundResource(android.R.drawable.ic_media_previous);
             }
         }
+
+        Ponto ponto1 = new Ponto((int) event.getX(), (int) event.getY());
+        quadrilatero.addPonto(ponto1);
         return false;
     }
     /*
@@ -332,6 +344,12 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        /*Ponto ponto1 = new Ponto((int)event.getX(), (int)event.getY());
+
+        quadrilatero.setPonto1(ponto1);*/
+
+
+
         /*touch_x = (int) event.getX();
         touch_y = (int) event.getY();
 
@@ -474,6 +492,21 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 Log.e(GENIAL_LOG, "JSONException " + e.getMessage());
             }
         }
+        for (int i = 0; i < quadrilatero.getPontos().length ; i++) {
+            if (quadrilatero.getPonto(i) != null) {
+                Point center1 = new Point(quadrilatero.getPonto(i).getX(), quadrilatero.getPonto(i).getY());
+
+                Imgproc.circle(frame, center1, 30, new Scalar(0, 255, 0), -1, Imgproc.LINE_AA, 0);
+/*
+                Imgproc.line(frame,
+                        quadrilatero.getArestas()[i].getPonto1(),
+                        quadrilatero.getArestas()[i].getPonto2(),
+                        new Scalar(0, 0, 255),
+                        3);*/
+
+            }
+        }
+
         return frame;
     }
 
